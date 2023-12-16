@@ -38,12 +38,7 @@ def login():
             flash('Invalid password.')
             return redirect(url_for('login'))
         # 登录用户
-        if user_type == 'admin':
-            login_user(user)
-        elif user_type == 'staff':
-            login_user(user)
-        elif user_type == 'reader':
-            login_user(user)
+        login_user(user)
         flash('Login success.')
         return redirect(url_for('index'))
     return render_template('login.html')

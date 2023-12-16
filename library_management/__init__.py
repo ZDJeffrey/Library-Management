@@ -23,20 +23,17 @@ login_manager = LoginManager(app) # 登录管理实例
 @login_manager.user_loader
 def load_admin(admin_id):
     from library_management.models import Admin
-    admin = Admin.query.get(int(admin_id))
-    return admin
+    return Admin.query.get(int(admin_id))
 
 @login_manager.user_loader
 def load_staff(staff_id):
     from library_management.models import Staff
-    staff = Staff.query.get(int(staff_id))
-    return staff
+    return Staff.query.get(int(staff_id))
 
 @login_manager.user_loader
 def load_reader(reader_id):
     from library_management.models import Reader
-    reader = Reader.query.get(int(reader_id))
-    return reader
+    return Reader.query.get(int(reader_id))
 
 from library_management import views, commands
 

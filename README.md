@@ -40,6 +40,11 @@
     flask forge
     ```
     导入测试数据，以便测试应用
+- 创建管理员账户
+    ```shell
+    flask admin
+    ```
+    创建管理员账户，以便登录管理网站
 - 运行应用
     ```shell
     flask run
@@ -84,6 +89,10 @@ This is a simple Book Management System implemented using Flask, a lightweight w
 - Create fake data to test the application
     ```shell
     flask forge
+    ```
+- Create an administrator account
+    ```shell
+    flask admin
     ```
 - Run the application
     ```shell

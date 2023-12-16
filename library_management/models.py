@@ -6,7 +6,7 @@ from library_management import db
 class Admin(db.Model, UserMixin):
     '''管理员'''
     __tablename__ = 'admin'
-    admin_id = db.Column(db.Integer, primary_key=True) # 管理者编号
+    admin_id = db.Column(db.Integer, primary_key=True, autoincrement=True) # 管理者编号
     account = db.Column(db.String(20), unique=True) # 账号
     password_hash = db.Column(db.String(128)) # 密码散列值
 
@@ -26,7 +26,7 @@ class Admin(db.Model, UserMixin):
 class Staff(db.Model, UserMixin):
     '''职工'''
     __tablename__ = 'staff'
-    staff_id = db.Column(db.Integer, primary_key=True) # 职工编号
+    staff_id = db.Column(db.Integer, primary_key=True, autoincrement=True) # 职工编号
     name = db.Column(db.String(40)) # 姓名
     age = db.Column(db.Integer) # 年龄
     id_card = db.Column(db.String(18)) # 身份证号
@@ -51,7 +51,7 @@ class Staff(db.Model, UserMixin):
 class Reader(db.Model, UserMixin):
     '''读者'''
     __tablename__ = 'reader'
-    reader_id = db.Column(db.Integer, primary_key=True) # 读者编号
+    reader_id = db.Column(db.Integer, primary_key=True, autoincrement=True) # 读者编号
     type_name = db.Column(db.String(10), db.ForeignKey('reader_type.type_name',ondelete='SET NULL')) # 读者类型
     name = db.Column(db.String(40)) # 姓名
     id_card = db.Column(db.String(18)) # 身份证号
@@ -106,19 +106,41 @@ class Book(db.Model):
     place = db.Column(db.String(40)) # 存放位置
     state = db.Column(db.Numeric(precision=1, scale=0)) # 图书状态
 
-# class BookOut(db.Model):
-#     '''出库'''
-#     __tablename__ = 'book_out'
-#     book_id = db.Column(db.Integer, primary_key=True, db.ForeignKey('book')) # 书籍编号
+class BookOut(db.Model):
+    '''出库'''
+    __tablename__ = 'book_out'
+    book_id = db.Column(db.Integer, db.ForeignKey('book.book_id', ondelete='RESTRICT')) # 书籍编号
+    staff_id = db.Column(db.Integer, db.ForeignKey('staff.staff_id',ondelete='RESTRICT')) # 职工编号
+    date = db.Column(db.Date) # 出库日期
+    reason = db.Column(db.String(20)) # 出库原因
 
-# class BookEntering(db.Model):
-#     '''入库'''
-#     __tablename__ = 'book_entering'
+    __table_args__ = (
+        db.PrimaryKeyConstraint('book_id', 'staff_id'),
+    )
+
+class BookEntering(db.Model):
+    '''入库'''
+    __tablename__ = 'book_entering'
+    book_id = db.Column(db.Integer, db.ForeignKey('book.book_id', ondelete='RESTRICT')) # 书籍编号
+    staff_id = db.Column(db.Integer, db.ForeignKey('staff.staff_id',ondelete='RESTRICT')) # 职工编号
+    date = db.Column(db.Date) # 出库日期
+    reason = db.Column(db.String(20)) # 出库原因
+
+    __table_args__ = (
+        db.PrimaryKeyConstraint('book_id', 'staff_id'),
+    )
     
+class Borrow(db.Model):
+    '''借阅'''
+    __tablename__ = 'borrow'
+    book_id = db.Column(db.Integer, db.ForeignKey('book.book_id', ondelete='RESTRICT')) # 书籍编号
+    reader_id = db.Column(db.Integer, db.ForeignKey('reader.reader_id',ondelete='RESTRICT')) # 读者编号
+    date = db.Column(db.Date) # 借阅日期
+    is_return = db.Column(db.Boolean) # 是否归还
 
-# class Borrow(db.Model):
-#     '''借阅'''
-#     __tablename__ = 'borrow'
+    __table_args__ = (
+        db.PrimaryKeyConstraint('book_id', 'reader_id'),
+    )
 
 
 

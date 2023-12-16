@@ -2,9 +2,9 @@
 
 
 {% block content %}
-<ul class="movie-list">
+<ul>
     {% for book in books %}
-    <li>{{ book.title }} - {{ movie.year }}</li>
+    <li>{{ book.book_id }} - {{ book.stack_id }} - {{ book.publisher_id }} - {{ book.title }} - {{ book.type }} - {{ book.author }} - {{ book.availability }} - {{ book.ISBN }} - {{ book.place }} - {{ book.state }}</li>
     {% endfor %}
 </ul>
 {% endblock %}

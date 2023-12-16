@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Login</h3>
+<form action="/login" method="post">
+    <label for="user_type">Select User Type:</label>
+    <select id="user_type" name="user_type">
+        <option value="staff">Staff</option>
+        <option value="reader">Reader</option>
+        <option value="admin">Administrator</option>
+    </select>
+    <br>
+    <label for="account">Account:</label>
+    <input type="text" name="account">
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" name="password">
+    <input type="submit" value="Login">
+</form>
+{% endblock %}

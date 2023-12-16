@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<ul class="movie-list">
+    {% for book in books %}
+    <li>{{ book.title }} - {{ movie.year }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

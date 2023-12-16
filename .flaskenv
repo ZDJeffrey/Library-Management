@@ -1,0 +1,3 @@
+FLASK_APP=library_management
+FLASK_ENV=development
+FLASK_DEBUG=1

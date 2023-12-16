@@ -3,8 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from library_management import db
 
-# 管理员
 class Admin(db.Model, UserMixin):
+    '''管理员'''
     __tablename__ = 'admin'
     admin_id = db.Column(db.Integer, primary_key=True) # 管理者编号
     account = db.Column(db.String(20), unique=True) # 账号
@@ -15,14 +15,16 @@ class Admin(db.Model, UserMixin):
         return self.admin_id
     
     def set_password(self, password):
+        '''设置密码'''
         self.password_hash = generate_password_hash(password)
     
     def validate_password(self, password):
+        '''验证密码'''
         return check_password_hash(self.password_hash, password)
 
 
-# 职工
 class Staff(db.Model, UserMixin):
+    '''职工'''
     __tablename__ = 'staff'
     staff_id = db.Column(db.Integer, primary_key=True) # 职工编号
     name = db.Column(db.String(40)) # 姓名
@@ -38,14 +40,16 @@ class Staff(db.Model, UserMixin):
         return self.staff_id
     
     def set_password(self, password):
+        '''设置密码'''
         self.password_hash = generate_password_hash(password)
 
     def validate_password(self, password):
+        '''验证密码'''
         return check_password_hash(self.password_hash, password)
 
 
-# 读者
 class Reader(db.Model, UserMixin):
+    '''读者'''
     __tablename__ = 'reader'
     reader_id = db.Column(db.Integer, primary_key=True) # 读者编号
     type_name = db.Column(db.String(10), db.ForeignKey('reader_type.type_name',ondelete='SET NULL')) # 读者类型
@@ -60,47 +64,48 @@ class Reader(db.Model, UserMixin):
         return self.reader_id
     
     def set_password(self, password):
+        '''设置密码'''
         self.password_hash = generate_password_hash(password)
 
     def validate_password(self, password):
+        '''验证密码'''
         return check_password_hash(self.password_hash, password)
 
 
-# 读者类型
 class ReaderType(db.Model):
+    '''读者类型'''
     __tablename__ = 'reader_type'
     type_name = db.Column(db.String(10), primary_key=True) # 读者类型
     available_number = db.Column(db.Integer) # 可借数量
     days = db.Column(db.Integer) # 可借天数
 
 
-# # 出库
 # class BookOut(db.Model):
+#     '''出库'''
 #     __tablename__ = 'book_out'
 
 
-# # 入库
 # class BookEntering(db.Model):
+#     '''入库'''
 #     __tablename__ = 'book_entering'
 
 
-# # 书籍
 # class Book(db.Model):
+#     '''书籍'''
 #     __tablename__ = 'book'
 
 
-# # 出版社
 # class Publisher(db.Model):
 #     __tablename__ = 'publisher'
 
 
-# # 书库
 # class Stack(db.Model):
+#     '''书库'''
 #     __tablename__ = 'stack'
 
 
-# # 借阅
 # class Borrow(db.Model):
+#     '''借阅'''
 #     __tablename__ = 'borrow'
 
 

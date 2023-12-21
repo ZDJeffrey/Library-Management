@@ -11,8 +11,8 @@ class Admin(db.Model, UserMixin):
     password_hash = db.Column(db.String(128)) # 密码散列值
 
     def get_id(self):
-        '''身份验证'''
-        return self.admin_id
+        '''身份验证(admin.[id])'''
+        return 'admin.'+str(self.admin_id)
     
     def set_password(self, password):
         '''设置密码'''
@@ -36,8 +36,8 @@ class Staff(db.Model, UserMixin):
     password_hash = db.Column(db.String(128)) # 密码散列值
 
     def get_id(self):
-        '''身份验证'''
-        return self.staff_id
+        '''身份验证(staff.[id])'''
+        return 'staff.'+str(self.staff_id)
     
     def set_password(self, password):
         '''设置密码'''
@@ -60,8 +60,8 @@ class Reader(db.Model, UserMixin):
     credit = db.Column(db.Integer) # 信誉值
 
     def get_id(self):
-        '''身份验证'''
-        return self.reader_id
+        '''身份验证(reader.[id])'''
+        return 'reader.'+str(self.reader_id)
     
     def set_password(self, password):
         '''设置密码'''

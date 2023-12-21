@@ -21,19 +21,19 @@ db = SQLAlchemy(app) # 数据库实例
 login_manager = LoginManager(app) # 登录管理实例
 
 @login_manager.user_loader
-def load_admin(admin_id):
-    from library_management.models import Admin
-    return Admin.query.get(int(admin_id))
-
-@login_manager.user_loader
-def load_staff(staff_id):
-    from library_management.models import Staff
-    return Staff.query.get(int(staff_id))
-
-@login_manager.user_loader
-def load_reader(reader_id):
-    from library_management.models import Reader
-    return Reader.query.get(int(reader_id))
+def load_user(user_id):
+    prefix, id = user_id.split('.')
+    if prefix == 'admin':
+        from library_management.models import Admin
+        return Admin.query.get(int(id))
+    elif prefix == 'staff':
+        from library_management.models import Staff
+        return Staff.query.get(int(id))
+    elif prefix == 'reader':
+        from library_management.models import Reader
+        return Reader.query.get(int(id))
+    else:
+        return None
 
 from library_management import views, commands
 

@@ -38,8 +38,8 @@ def forge():
     '''Generate fake data.'''
     db.create_all()
     staffs = [
-        {'staff_id':1,'name':'张三','age':20,'id_card':'123456789012345678','phone_number':'12345678901','address':'北京市','account':'staff1','password':'123456'},
-        {'staff_id':2,'name':'李四','age':21,'id_card':'123456789012345678','phone_number':'12345678901','address':'北京市','account':'staff2','password':'123456'}
+        {'staff_id':1234,'name':'张三','age':20,'id_card':'123456789012345678','phone_number':'12345678901','address':'北京市','account':'staff1','password':'123456'},
+        {'staff_id':2345,'name':'李四','age':21,'id_card':'123456789012345678','phone_number':'12345678901','address':'北京市','account':'staff2','password':'123456'}
     ]
 
     for s in staffs:
@@ -57,8 +57,8 @@ def forge():
         db.session.add(reader_type)
 
     readers = [
-        {'reader_id':1,'type_name':'新人','name':'王五','id_card':'123456789012345678','account':'reader1','password':'123456','credit':100},
-        {'reader_id':2,'type_name':'熟人','name':'赵六','id_card':'123456789012345678','account':'reader2','password':'123456','credit':100}
+        {'reader_id':13245,'type_name':'新人','name':'王五','id_card':'123456789012345678','account':'reader1','password':'123456','credit':100},
+        {'reader_id':12314,'type_name':'熟人','name':'赵六','id_card':'123456789012345678','account':'reader2','password':'123456','credit':100}
     ]
 
     for r in readers:

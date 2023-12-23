@@ -6,12 +6,16 @@ from library_management.models import *
 from library_management.utils import *
 
 # 主页：显示所有书籍或根据书名搜索书籍
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    books = book_join_publisher()
     if isinstance(current_user, Admin):
         staffs = Staff.query.all()
         return render_template('index.html', staffs=staffs)
+    if request.method=='POST':
+        search_type = request.form['search_type']
+        search_text = request.form['search_text']
+        books = book_join_publisher_search_by(search_type, search_text)
+    books = book_join_publisher()
     return render_template('index.html', books=books)
 
 

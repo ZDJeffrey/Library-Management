@@ -7,7 +7,7 @@
         <div class="col-md-5"></div>
         <div class="col-md-2">
             <h2 class="text-center">用户登录</h2>
-            <form action="/login" method="post">
+            <form action="{{ url_for('login') }}" method="post">
                 <div class="form-group">
                     <label>用户类型</label>
                     <select class="'form-select" name="user_type">
@@ -25,7 +25,7 @@
                     <label>密码</label>
                     <input type="password" class="form-control" name="password" />
                 </div>
-                <button type="submit" class="btn btn-primary">登录</button>
+                <button type="submit" class="btn btn-primary" style="float: right;">登录</button>
             </form>
         </div>
         <div class="col-md-5"></div>

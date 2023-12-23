@@ -9,6 +9,8 @@
         <div class="col-md-8">
             {% if current_user.is_authenticated and user_type=='admin' %}
             <h2 class="text-center">职工信息</h2> 
+            <a class="btn btn-success btn-md" href="{{ url_for('add_staff') }}" style="float: right;">新增员工</a>
+            <br><br>
 			<table class="table">
                 <thead>
                     <tr>
@@ -35,10 +37,9 @@
                     {% endfor %}
 				</tbody>
 			</table>
-            <a class="btn btn-success btn-md btn-block">新增员工</a>
             {% else %}
             <h2 class="text-center">书籍信息</h2>
-            <form class="form-inline" action="/" method="post" style="display: flex; justify-content: space-between; width: 100%;">
+            <form class="form-inline" action="" method="post" style="display: flex; justify-content: space-between; width: 100%;">
                 <div class="form-group">
                     <label>查询类型</label>
                     <select class="'form-select" name="search_type"  style="width: 100%;">

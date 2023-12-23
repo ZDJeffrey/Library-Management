@@ -19,6 +19,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app) # 数据库实例
 login_manager = LoginManager(app) # 登录管理实例
+login_manager.login_view = 'login'  # 设置登录页面的视图名称
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -34,6 +35,20 @@ def load_user(user_id):
         return Reader.query.get(int(id))
     else:
         return None
+    
+@app.context_processor
+def inject_user_type():
+    from library_management.models import Admin, Staff, Reader
+    from flask_login import current_user
+    if isinstance(current_user, Admin):
+        user_type = 'admin'
+    elif isinstance(current_user, Staff):
+        user_type = 'staff'
+    elif isinstance(current_user, Reader):
+        user_type = 'reader'
+    else:
+        user_type = None
+    return dict(user_type=user_type)
 
 from library_management import views, commands
 

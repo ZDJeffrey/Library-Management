@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-2">
+		</div>
+		<div class="col-md-8">
+			<h2 class="text-center">书籍信息</h2>
+            <form action="{{ url_for('book_detail', book_id=book.book_id) }}" method="post">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>书名: {{ book.title }}</td>
+                            <td>ID: {{ book.book_id }}</td>
+                            <td>ISBN: {{ book.ISBN }}</td>
+                        </tr>
+                        <tr>
+                            <td>类型: {{ book.title }}</td>
+                            <td>作者: {{ book.ID }}</td>
+                            <td>出版社: {{ book.ISBN }}</td>
+                        </tr>
+                        <tr>
+                            {% if book.availability %}
+                            <td>状态: 收录</td>
+                            {% else %}
+                            <td>状态: 未收录</td>
+                            {% endif %}
+                            <td>书库: {{ book.stack_name }}</td>
+                            {% if user_type=='reader' %}
+                            <td>位置: {{ book.place }}</td>
+                            {% elif user_type=='staff' %}
+                            <td>
+                                位置: <input class="form" name="place" value="{{ book.place }}" />
+                            </td>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                </table>
+                {% if user_type=='reader' and book.state %}
+                <button type="submit" name="submit" value="borrow" class="btn btn-primary" style="float: right;">借阅</button>
+                {% elif user_type=='reader' and not book.state %}
+                <a class="btn btn-primary disabled" style="float: right;">借阅</a>
+                {% elif user_type=='staff' %}
+                <button type="submit" name="submit" value="modify" class="btn btn-primary" style="float: right;">修改</button>
+            </form>
+            {% endif %}
+            {% if user_type=='staff' %}
+            <br>
+            <h3>借阅记录</h3>
+            <table class="table table-striped">
+				<tbody>
+					<tr>
+						<th>读者ID</th>
+						<th>借阅时间</th>
+						<th>是否归还</th>
+					</tr>
+					</tr>
+                    {% for borrow in borrows %}
+                    <tr class="table-active">
+                        <td>{{ borrow.reader_id }}</td>
+                        <td>{{ borrow.date }}</td>
+                        {% if borrow.is_return %}
+                        <td>已归还</td>
+                        {% else %}
+                        <td>未归还</td>
+                        {% endif %}
+					</tr>
+                    {% endfor %}
+				</tbody>
+			</table>
+            <br>
+            <h3>入库记录</h3>
+            <table class="table table-striped">
+				<tbody>
+					<tr>
+						<th>职工ID</th>
+						<th>时间</th>
+						<th>原因</th>
+					</tr>
+					</tr>
+                    {% for enter in enters %}
+                    <tr class="table-active">
+                        <td>{{ enter.staff_id }}</td>
+                        <td>{{ enter.date }}</td>
+                        <td>{{ enter.reason }}</td>
+					</tr>
+                    {% endfor %}
+				</tbody>
+			</table>
+            <br>
+            <h3>出库记录</h3>
+            <table class="table table-striped">
+				<tbody>
+					<tr>
+						<th>职工ID</th>
+						<th>时间</th>
+						<th>原因</th>
+					</tr>
+					</tr>
+                    {% for out in outs %}
+                    <tr class="table-active">
+                        <td>{{ out.staff_id }}</td>
+                        <td>{{ out.date }}</td>
+                        <td>{{ out.reason }}</td>
+					</tr>
+                    {% endfor %}
+				</tbody>
+			</table>
+		</div>
+        {% endif %}
+		<div class="col-md-2">
+		</div>
+	</div>
+</div>
+{% endblock %}

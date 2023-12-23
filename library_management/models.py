@@ -104,7 +104,7 @@ class Book(db.Model):
     availability = db.Column(db.Boolean) # 是否被收录
     ISBN = db.Column(db.String(13)) # ISBN
     place = db.Column(db.String(40)) # 存放位置
-    state = db.Column(db.Numeric(precision=1, scale=0)) # 图书状态
+    state = db.Column(db.Boolean) # 是否被借阅
 
 class BookOut(db.Model):
     '''出库'''
@@ -133,15 +133,11 @@ class BookEntering(db.Model):
 class Borrow(db.Model):
     '''借阅'''
     __tablename__ = 'borrow'
+    borrow_id = db.Column(db.Integer, primary_key=True, autoincrement=True) # 借阅编号
     book_id = db.Column(db.Integer, db.ForeignKey('book.book_id', ondelete='RESTRICT')) # 书籍编号
     reader_id = db.Column(db.Integer, db.ForeignKey('reader.reader_id',ondelete='RESTRICT')) # 读者编号
     date = db.Column(db.Date) # 借阅日期
     is_return = db.Column(db.Boolean) # 是否归还
-
-    __table_args__ = (
-        db.PrimaryKeyConstraint('book_id', 'reader_id'),
-    )
-
 
 
 

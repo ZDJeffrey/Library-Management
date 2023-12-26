@@ -14,7 +14,7 @@ def book_join_publisher():
 
 def book_join_publisher_search_by(search_type, search_text):
     '''
-    书籍和出版社表外连接结果,返回字典列表,字典属性值为变量名,其中出版社属性只需要出版社名字
+    书籍和出版社表外连接结果,返回字典列表,字典属性值为变量名,其中出版社属性只需要出版社名字publisher_name
     search_type为搜索类型(id,title,author,ISBN,publisher),search_text为搜索内容
     '''
     return []
@@ -62,12 +62,6 @@ def add_stack(stack_name, stack_address, stack_open_time)->bool:
     添加书库,返回是否添加成功
     '''
     pass
-
-def readers_join_type():
-    '''
-    读者和读者类型表外连接结果,返回字典列表,字典属性值为变量名
-    '''
-    return []
 
 def modify_reader(reader_id, type_name)->bool:
     '''

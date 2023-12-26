@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <h2 class="text-center">读者管理</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>读者ID</th>
+                        <th>读者姓名</th>
+                        <th>读者类型</th>
+                        <th>信誉值</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reader in readers %}
+                    <tr>
+                        <td>{{ reader.reader_id }}</td>
+                        <td>{{ reader.name }}</td>
+                        <td>{{ reader.type_name }}</td>
+                        <td>{{ reader.credit }}</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-info" href="{{ url_for('reader_modify', reader_id=reader.reader_id) }}">
+                                详情
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-2"></div>
+	</div>
+</div>
+
+{% endblock %}

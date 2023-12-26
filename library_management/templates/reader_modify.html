@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-2">
+		</div>
+		<div class="col-md-8">
+			<h2 class="text-center">书籍信息</h2>
+            <form action="{{ url_for('reader_modify', reader_id=reader.reader_id) }}" method="post">
+                <table class="table table-striped" style="text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td>ID: {{ reader.reader_id }}</td>
+                            <td>姓名: {{ reader.name }}</td>
+                            <td>身份证号: {{ reader.id_card }}</td>
+                        </tr>
+                        <tr>
+                            <td>信誉值: {{ reader.credit }}</td>
+                            <td>
+                                读者类型: 
+                                <select class="'form-select" name="type_name">
+                                    {% for reader_type in reader_types %}
+                                    {% if reader.type_name == reader_type.type_name %}
+                                    <option value="{{ reader_type.type_name }}" selected>{{ reader_type.type_name }}</option>
+                                    {% else %}
+                                    <option value="{{ reader_type.type_name }}">{{ reader_type.type_name }}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" name="submit" class="btn btn-primary" style="float: right;">修改</button>
+            </form>
+            <br>
+            <h3>借阅记录</h3>
+            <table class="table table-striped">
+				<tbody>
+					<tr>
+						<th>书籍ID</th>
+						<th>借阅时间</th>
+						<th>是否归还</th>
+					</tr>
+					</tr>
+                    {% for borrow in borrows %}
+                    <tr>
+                        <td>{{ borrow.book_id }}</td>
+                        <td>{{ borrow.date }}</td>
+                        {% if borrow.is_return %}
+                        <span class="label label-success">已归还</span>
+                        {% else %}
+                        <span class="label label-danger">未归还</span>
+                        {% endif %}
+					</tr>
+                    {% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="col-md-2">
+		</div>
+	</div>
+</div>
+{% endblock %}

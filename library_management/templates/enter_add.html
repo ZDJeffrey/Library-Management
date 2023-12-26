@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-2">
+		</div>
+		<div class="col-md-8">
+			<h2 class="text-center">书籍入库</h2>
+            <form action="{{ url_for('book_enter_add') }}" method="post">
+                <table class="table table-striped" style="text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                书名: 
+                                <input class="form" name="title" value="{{ title }}" />
+                            </td>
+                            <td>
+                                ID: 
+                                <input class="form" name="book_id" value="{{ book_id }}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                ISBN: 
+                                <input class="form" name="ISBN" value="{{ ISBN }}" />
+                            </td>
+                            <td>
+                                类型: 
+                                <input class="form" name="type_name" value="{{ type_name }}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                作者: 
+                                <input class="form" name="author" value="{{ author }}" />
+                            </td>
+                            <td>
+                                出版社: 
+                                <select class="'form-select" name="publisher_id">
+                                    <option selected>请选择出版社</option>
+                                    {% for publisher in publishers %}
+                                    {% if publisher.publisher_id == publisher_id %}
+                                    <option value="{{ publisher.publisher_id }}" selected>{{ publisher.publisher_name }}</option>
+                                    {% else %}
+                                    <option value="{{ publisher.publisher_id }}">{{ publisher.publisher_name }}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                书库: 
+                                <select class="'form-select" name="stack_id">
+                                    <option selected>请选择书库</option>
+                                    {% for stack in stacks %}
+                                    {% if stack.stack_id == stack_id %}
+                                    <option value="{{ stack.stack_id }}" selected>{{ stack.stack_name }}</option>
+                                    {% else %}
+                                    <option value="{{ stack.stack_id }}">{{ stack.stack_name }}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                位置: 
+                                <input class="form" name="place" value="{{ place }}" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary" style="float: right;">添加</button>
+            </form>
+		<div class="col-md-2">
+		</div>
+	</div>
+</div>
+{% endblock %}

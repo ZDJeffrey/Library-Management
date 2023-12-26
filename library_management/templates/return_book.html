@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <h2 class="text-center">书籍归还</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>书籍ID</th>
+                        <th>书名</th>
+                        <th>借阅时间</th>
+                        <th>剩余时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for borrow in borrows %}
+                    <tr>
+                        <td>{{ borrow.book_id }}</td>
+                        <td>{{ borrow.title }}</td>
+                        <td>{{ borrow.date }}</td>
+                        <td>{{ borrow.day_left }}</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-info" href="{{ url_for('return_book', book_id=borrow.book_id) }}">
+                                归还
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-2"></div>
+	</div>
+</div>
+
+{% endblock %}

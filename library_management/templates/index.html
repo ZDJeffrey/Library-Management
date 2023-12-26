@@ -25,7 +25,7 @@
 				</thead>
 				<tbody>
                     {% for staff in staffs %}
-					<tr class="table-active">
+					<tr>
                         <td>{{ staff.staff_id }}</td>
 						<td>{{ staff.name }}</td>
 						<td>{{ staff.age }}</td>
@@ -39,22 +39,42 @@
 			</table>
             {% else %}
             <h2 class="text-center">书籍信息</h2>
-            <form class="form-inline" action="" method="post" style="display: flex; justify-content: space-between; width: 100%;">
+            <form class="form-inline" action="{{ url_for('index') }}" method="post" style="display: flex; justify-content: space-between; width: 100%;">
                 <div class="form-group">
                     <label>查询类型</label>
-                    <select class="'form-select" name="search_type"  style="width: 100%;">
+                    <select class="'form-select" name="search_type" style="width: 100%;">
                         <option selected>请选择查询类型</option>
+                        {% if search_type == 'id' %}
+                        <option value="id" selected>书籍ID</option>
+                        {% else %}
                         <option value="id">书籍ID</option>
+                        {% endif %}
+                        {% if search_type == 'title' %}
+                        <option value="title" selected>书名</option>
+                        {% else %}
                         <option value="title">书名</option>
+                        {% endif %}
+                        {% if search_type == 'author' %}
+                        <option value="author" selected>作者</option>
+                        {% else %}
                         <option value="author">作者</option>
+                        {% endif %}
+                        {% if search_type == 'ISBN' %}
+                        <option value="ISBN" selected>ISBN</option>
+                        {% else %}
                         <option value="ISBN">ISBN</option>
+                        {% endif %}
+                        {% if search_type == 'publisher' %}
+                        <option value="publisher" selected>出版社</option>
+                        {% else %}
                         <option value="publisher">出版社</option>
+                        {% endif %}
                     </select>
                 </div>
                 &nbsp;
                 <div class="form-group" style="flex: 1;">
                     <label>查询内容</label>
-                    <input class="form" name="search_text" style="width: 100%;" />
+                    <input class="form" name="search_text" style="width: 100%;" value="{{ search_text }}" />
                 </div>
                 &nbsp;
                 <button type="submit" class="btn btn-primary">查询</button>
@@ -72,17 +92,19 @@
                 </thead>
                 <tbody>
                     {% for book in books %}
-                    <tr class="table-active">
+                    <tr>
                         <td>{{ book.book_id }}</td>
                         <td>{{ book.title }}</td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.ISBN }}</td>
                         <td>{{ book.publisher_name }}</td>
-                        {% if book.state %}
-                        <td>可借阅</td>
-                        {% else %}
-                        <td>不可借阅</td>
-                        {% endif %}
+                        <td>
+                            {% if book.state %}
+                            <span class="badge badge-success">可借阅</span>
+                            {% else %}
+                            <span class="badge badge-danger">不可借阅</span>
+                            {% endif %}
+                        </td>
                         <td>
                             <a class="btn btn-sm btn-outline-info" href="{{ url_for('book_detail', book_id=book.book_id) }}">
                                 详情

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <h2 class="text-center">出版社信息</h2>
+            <br>
+            {% if user_type=='staff' %}
+            <form class="form-inline" action="" method="post" style="display: flex; justify-content: space-between; width: 100%;">
+                <label>名字</label>
+                &nbsp;
+                <div class="form-group" style="flex: 1;">
+                    <input class="form" name="publisher_name" style="width: 100%;" value="{{publisher_name}}"/>
+                </div>
+                &nbsp;
+                <label>地址</label>
+                &nbsp;
+                <div class="form-group" style="flex: 1;">
+                    <input class="form" name="publisher_address" style="width: 100%;" value="{{publisher_address}}"/>
+                </div>
+                &nbsp;
+                <button type="submit" class="btn btn-primary">添加</button>
+            </form>
+            {% endif %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名字</th>
+                        <th>地址</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for publisher in publishers %}
+                    <tr>
+                        <td>{{ publisher.publisher_id }}</td>
+                        <td>{{ publisher.publisher_name }}</td>
+                        <td>{{ publisher.address }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-2"></div>
+	</div>
+</div>
+
+{% endblock %}

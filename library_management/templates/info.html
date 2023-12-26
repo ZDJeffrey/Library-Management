@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+{% if user_type == 'reader' %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-3">
+		</div>
+		<div class="col-md-6">
+			<h2 class="text-center">读者信息</h2>
+            <form action="{{ url_for('account_info') }}" method="post">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>
+                                ID: {{ current_user.reader_id }}
+                            </td>
+                            <td>
+                                姓名: 
+                                <input class="form" name="name" value="{{ current_user.name }}" required/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                身份证号: 
+                                <input class="form" name="id_card" value="{{ current_user.id_card }}" required/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                读者类型: {{ current_user.type_name }}
+                            </td>
+                            <td>
+                                信誉值: {{ current_user.credit }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                可借阅总数: {{ reader_type.available_number }}
+                            </td>
+                            <td>
+                                可借阅天数: {{ reader_type.days }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                账号: 
+                                <input class="form" name="account" value="{{ current_user.account }}" required/>
+                            </td>
+                            <td>
+                                密码: 
+                                <input class="form" name="password" value="{{ password }}" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary" style="float: right;">保存</button>
+            </form>
+		<div class="col-md-3">
+		</div>
+	</div>
+</div>
+{% elif user_type == 'staff' %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-2">
+		</div>
+		<div class="col-md-8">
+			<h2 class="text-center">读者信息</h2>
+            <form action="{{ url_for('account_info') }}" method="post">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>
+                                ID: {{ current_user.staff_id }}
+                            </td>
+                            <td>
+                                姓名: 
+                                <input class="form" name="name" value="{{ current_user.name }}" required/>
+                            </td>
+                            <td>
+                                年龄: 
+                                <input class="form" name="age" value="{{ current_user.age }}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                身份证号: 
+                                <input class="form" name="id_card" value="{{ current_user.id_card }}" required/>
+                            </td>
+                            <td>
+                                电话号码: 
+                                <input class="form" name="phone_number" value="{{ current_user.phone_number }}"/>
+                            </td>
+                            <td>
+                                住址: 
+                                <input class="form" name="address" value="{{ current_user.address }}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                账号: 
+                                <input class="form" name="account" value="{{ current_user.account }}" required/>
+                            </td>
+                            <td>
+                                密码: 
+                                <input class="form" name="password" value="{{ password }}" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary" style="float: right;">保存</button>
+            </form>
+		<div class="col-md-2">
+		</div>
+	</div>
+</div>
+{% elif user_type == 'admin' %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-5">
+		</div>
+		<div class="col-md-2">
+            <h2 class="text-center">管理员信息</h2>
+            <br><br>
+            <div class="form-group">
+                管理员ID: {{ current_user.admin_id }}
+            </div>
+			<form action="{{ url_for('account_info') }}" method="post">
+				<div class="form-group">
+					<label>账号</label>
+					<input type="account" class="form-control" name="account" value="{{ current_user.account }}" required/>
+				</div>
+				<div class="form-group">
+					<label>密码</label>
+					<input type="password" class="form-control" name="password"/>
+				</div>
+				<button type="submit" class="btn btn-primary" style="float: right;">保存</button>
+			</form>
+		</div>
+		<div class="col-md-5">
+		</div>
+	</div>
+</div>
+
+{% endif %}
+
+{% endblock %}

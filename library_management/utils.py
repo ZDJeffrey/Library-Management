@@ -28,6 +28,7 @@ def edit_book(book_id, place)->bool:
 def books_to_return(reader_id):
     '''
     读者借阅的书籍,返回书籍列表(书籍ID、书名、借阅时间、剩余时间)
+    [{book_id, title, date, day_left}]
     '''
     return []
 
@@ -46,6 +47,7 @@ def borrow_book(book_id, reader_id)->bool:
 def user_borrow_history(reader_id):
     '''
     读者借书历史,返回书籍列表(书籍ID、书名、借阅时间、是否归还)
+    [{book_id, title, date, is_return}]
     '''
     return []
 
@@ -106,5 +108,11 @@ def reader_modify_info(reader_id, name, id_card, account, password)->bool:
     修改读者信息,返回是否修改成功
     id不修改
     password若为空则不修改
+    '''
+    pass
+
+def add_new_staff(account, password)->bool:
+    '''
+    添加新员工,返回是否添加成功
     '''
     pass

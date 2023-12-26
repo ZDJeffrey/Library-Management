@@ -7,23 +7,36 @@
         <div class="col-md-5"></div>
         <div class="col-md-2">
             <h2 class="text-center">用户登录</h2>
+            <br>
             <form action="{{ url_for('login') }}" method="post">
                 <div class="form-group">
                     <label>用户类型</label>
-                    <select class="'form-select" name="user_type">
+                    <select class="'form-select" name="login_type">
                         <option selected>请选择用户类型</option>
+                        {% if login_type == 'reader' %}
+                        <option value="reader" selected>读者</option>
+                        {% else %}
                         <option value="reader">读者</option>
+                        {% endif %}
+                        {% if login_type == 'staff' %}
+                        <option value="staff" selected>员工</option>
+                        {% else %}
                         <option value="staff">员工</option>
+                        {% endif %}
+                        {% if login_type == 'admin' %}
+                        <option value="admin" selected>管理员</option>
+                        {% else %}
                         <option value="admin">管理员</option>
+                        {% endif %}
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group">    
                     <label>账号</label>
-                    <input type="account" class="form-control" name="account" />
+                    <input type="account" class="form-control" name="account" value="{{account}}" required/>
                 </div>
                 <div class="form-group">
                     <label>密码</label>
-                    <input type="password" class="form-control" name="password" />
+                    <input type="password" class="form-control" name="password" value="{{password}}" required/>
                 </div>
                 <button type="submit" class="btn btn-primary" style="float: right;">登录</button>
             </form>

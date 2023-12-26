@@ -14,7 +14,9 @@ def index():
     if request.method=='POST':
         search_type = request.form['search_type']
         search_text = request.form['search_text']
+        print(search_type, search_text)
         books = book_join_publisher_search_by(search_type, search_text)
+        return render_template('index.html', books=books, search_type=search_type, search_text=search_text)
     books = book_join_publisher()
     return render_template('index.html', books=books)
 
@@ -26,26 +28,26 @@ def login():
         # 获取表单数据
         account = request.form['account']
         password = request.form['password']
-        user_type = request.form['user_type']
+        login_type = request.form['login_type']
         # 验证数据
-        if not account or not password or not user_type:
+        if not account or not password or not login_type:
             flash('Invalid input.')
             return redirect(url_for('login'))
-        if user_type == 'admin':
+        if login_type == 'admin':
             user = Admin.query.filter_by(account=account).first()
-        elif user_type == 'staff':
+        elif login_type == 'staff':
             user = Staff.query.filter_by(account=account).first()
-        elif user_type == 'reader':
+        elif login_type == 'reader':
             user = Reader.query.filter_by(account=account).first()
         else:
             flash('Invalid user type.')
-            return redirect(url_for('login'))
+            return render_template('login.html', account=account, password=password)
         if not user:
             flash('Invalid account.')
-            return redirect(url_for('login'))
+            return render_template('login.html',login_type=login_type)
         if not user.validate_password(password):
             flash('Invalid password.')
-            return redirect(url_for('login'))
+            return render_template('login.html', login_type=login_type, account=account)
         # 登录用户
         login_user(user)
         flash('Login success.')
@@ -67,12 +69,16 @@ def logout():
 def account_info():
     if isinstance(current_user, Admin):
         if request.method == 'POST':
+            admin_id = current_user.admin_id
             account = request.form['account']
             password = request.form['password']
-            if admin_modify_info(current_user.admin_id, account, password):
+            if admin_modify_info(admin_id, account, password):
                 flash('修改成功')
+                logout_user()
+                login_user(Admin.query.get(admin_id))
             else:
                 flash('修改失败')
+                return render_template('info.html', password=password)
     elif isinstance(current_user, Staff):
         if request.method == 'POST':
             name = request.form['name']
@@ -86,6 +92,7 @@ def account_info():
                 flash('修改成功')
             else:
                 flash('修改失败')
+                return render_template('info.html', password=password)
     elif isinstance(current_user, Reader):
         if request.method == 'POST':
             name = request.form['name']
@@ -96,7 +103,9 @@ def account_info():
                 flash('修改成功')
             else:
                 flash('修改失败')
-    return render_template('info.html', user=current_user)
+        reader_type = ReaderType.query.get(current_user.type_name)
+        return render_template('info.html', reader_type=reader_type)
+    return render_template('info.html')
 
 
 # 读者注册界面
@@ -114,7 +123,7 @@ def register():
             return redirect(url_for('login'))
         else:
             flash('Account already exists.')
-            return redirect(url_for('register'))
+            return render_template('register.html', name=name, id_card=id_card, account=account, password=password)
     return render_template('register.html')
 
 
@@ -159,7 +168,7 @@ def return_books_list():
     return render_template('return_book.html', borrows=borrows)
 
 
-@app.route('/return_book/<int:book_id>', methods=['POST'])
+@app.route('/return_book/<int:book_id>', methods=['GET'])
 @login_required
 def return_book(book_id):
     if not isinstance(current_user, Reader):
@@ -204,11 +213,15 @@ def book_enter_add():
         publisher_id = request.form['publisher_id']
         stack_id = request.form['stack_id']
         place = request.form['place']
+        print(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place)
         if add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, staff_id=current_user.staff_id):
             flash('添加成功')
             return redirect(url_for('book_enter'))
         else:
             flash('添加失败')
+            publishers = Publisher.query.all()
+            stacks = Stack.query.all()
+            return render_template('enter_add.html', publishers=publishers, stacks=stacks, title=title, book_id=book_id, ISBN=ISBN, type_name=type_name, author=author, publisher_id=publisher_id, stack_id=stack_id, place=place)
     publishers = Publisher.query.all()
     stacks = Stack.query.all()
     return render_template('enter_add.html', publishers=publishers, stacks=stacks)
@@ -237,10 +250,11 @@ def book_out_add():
             return redirect(url_for('book_out'))
         else:
             flash('添加失败')
+            return render_template('out_add.html', book_id=book_id, date=date, reason=reason)
     return render_template('out_add.html')
 
 
-# 出版商信息界面
+# 出版社信息界面
 @app.route('/publisher', methods=['GET', 'POST'])
 @login_required
 def publisher_msg():
@@ -251,8 +265,11 @@ def publisher_msg():
         publisher_address = request.form['publisher_address']
         if add_publisher(publisher_name, publisher_address):
             flash('添加成功')
+            return redirect(url_for('publisher_msg'))
         else:
             flash('添加失败')
+            publishers = Publisher.query.all()
+            return render_template('publisher.html', publishers=publishers, publisher_name=publisher_name, publisher_address=publisher_address)
     publishers = Publisher.query.all()
     return render_template('publisher.html', publishers=publishers)
 
@@ -269,8 +286,12 @@ def book_stack_msg():
         stack_open_time = request.form['stack_open_time']
         if add_stack(stack_name, stack_address, stack_open_time):
             flash('添加成功')
+            return redirect(url_for('book_stack_msg'))
         else:
             flash('添加失败')
+            stacks = Stack.query.all()
+            return render_template('stack.html', stacks=stacks, stack_name=stack_name, stack_address=stack_address, stack_open_time=stack_open_time)
+
 
     stacks = Stack.query.all()
     return render_template('stack.html', stacks=stacks)
@@ -298,7 +319,8 @@ def reader_modify(reader_id):
         else:
             flash('修改失败')
     borrows = user_borrow_history(reader_id)
-    return render_template('reader_modify.html', reader=reader, borrows=borrows)
+    reader_types = ReaderType.query.all()
+    return render_template('reader_modify.html', reader=reader, borrows=borrows, reader_types=reader_types)
 
 # 新建职工
 @app.route('/add_staff', methods=['GET', 'POST'])
@@ -309,11 +331,12 @@ def add_staff():
     if request.method == 'POST':
         account = request.form['account']
         password = request.form['password']
-        if add_staff(account, password):
+        if add_new_staff(account, password):
             flash('添加成功')
             return redirect(url_for('index'))
         else:
             flash('添加失败')
+            return render_template('add_staff.html', account=account, password=password)
     return render_template('add_staff.html')
 
 

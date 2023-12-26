@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <h2 class="text-center">入库信息</h2> 
+            <a class="btn btn-success btn-md" href="{{ url_for('book_enter_add') }}" style="float: right;">新增入库信息</a>
+            <br><br>
+			<table class="table table-striped">
+                <thead>
+                    <tr>
+						<th>书籍ID</th>
+						<th>职工ID</th>
+						<th>时间</th>
+						<th>原因</th>
+					</tr>
+				</thead>
+				<tbody>
+                    {% for enter in enters %}
+					<tr>
+						<td>{{ enter.book_id }}</td>
+						<td>{{ enter.staff_id }}</td>
+						<td>{{ enter.date }}</td>
+						<td>{{ enter.reason }}</td>
+					</tr>
+                    {% endfor %}
+				</tbody>
+			</table>
+        </div>
+        <div class="col-md-2"></div>
+	</div>
+</div>
+
+{% endblock %}

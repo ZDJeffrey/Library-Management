@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <h2 class="text-center">书库信息</h2>
+            <br>
+            {% if user_type=='staff' %}
+            <form class="form-inline" action="" method="post" style="display: flex; justify-content: space-between; width: 100%;">
+                <label>名字</label>
+                &nbsp;
+                <div class="form-group" style="flex: 1;">
+                    <input class="form" name="stack_name" style="width: 100%;" value="{{stack_name}}"/>
+                </div>
+                &nbsp;
+                <label>地址</label>
+                &nbsp;
+                <div class="form-group" style="flex: 1;">
+                    <input class="form" name="stack_address" style="width: 100%;" value="{{stack_address}}"/>
+                </div>
+                &nbsp;
+                <label>开放时间</label>
+                &nbsp;
+                <div class="form-group" style="flex: 1;">
+                    <input class="form" name="stack_open_time" style="width: 100%;" value="{{stack_open_time}}"/>
+                </div>
+                &nbsp;
+                <button type="submit" class="btn btn-primary">添加</button>
+            </form>
+            {% endif %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名字</th>
+                        <th>地址</th>
+                        <th>开放时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stack in stacks %}
+                    <tr>
+                        <td>{{ stack.stack_id }}</td>
+                        <td>{{ stack.stack_name }}</td>
+                        <td>{{ stack.location }}</td>
+                        <td>{{ stack.opening }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-2"></div>
+	</div>
+</div>
+
+{% endblock %}

@@ -19,10 +19,9 @@ def book_join_publisher():
     '''
     书籍和出版社表外连接结果,返回字典列表,字典属性值为变量名,其中出版社属性只需要出版社名字
     '''
-    ret = Book.query.all().join(Publisher, Book.publisher_id == Publisher.publisher_id).add_column(
-        Publisher.publisher_name).order_by(Book.title).all()
-    return ret
-    # return []
+    # ret = Book.query.join(Publisher, Book.publisher_id == Publisher.publisher_id).all().order_by(Book.title)
+    # return ret
+    return []
 
 def book_join_publisher_search_by(search_type, search_text):
     '''

@@ -49,7 +49,7 @@
     ```shell
     flask run
     ```
-    运行网站，访问`http://127.0.0.1:5000/`，其余路由参见views.py文件
+    运行网站，访问[http://127.0.0.1:5000/](http://127.0.0.1:5000/)，其余路由参见views.py文件
 
 # Library-Management
 This is a simple Book Management System implemented using Flask, a lightweight web application framework for Python.

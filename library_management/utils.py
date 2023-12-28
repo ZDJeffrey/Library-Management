@@ -6,14 +6,12 @@ def user_register(name, id_card, account, password)->bool:
     '''
     # 读者类型默认为新人,信誉值默认为100
     next_id = Reader.query.order_by(Reader.reader_id.desc()).first().reader_id + 1
-    reader = Reader(reader_id=next_id, type_name='新人', name=name, id_card=id_card, account=account, credit=100,
-                    password_hash=password)
+    reader = Reader(reader_id=next_id, type_name='新人', name=name, id_card=id_card, account=account, credit=100)
+    reader.set_password(password)
     db.session.add(reader)
-    if db.session.commit():
-        return True
-    else:
-        return False
-    pass
+    db.session.commit()
+    return True
+
 
 def book_join_publisher():
     '''
@@ -100,10 +98,8 @@ def add_publisher(publisher_name, publisher_address)->bool:
     publisher_id = Publisher.query.order_by(Publisher.publisher_id.desc()).first().publisher_id + 1
     publisher = Publisher(publisher_id=publisher_id, publisher_name=publisher_name, address=publisher_address)
     db.session.add(publisher)
-    if db.session.commit():
-        return True
-    else:
-        return False
+    db.session.commit()
+    return True
 
 def add_stack(stack_name, stack_address, stack_open_time)->bool:
     '''
@@ -112,10 +108,8 @@ def add_stack(stack_name, stack_address, stack_open_time)->bool:
     stack_id = Stack.query.order_by(Stack.stack_id.desc()).first().stack_id + 1
     stack = Stack(stack_id=stack_id,stack_name=stack_name, location=stack_address, opening=stack_open_time)
     db.session.add(stack)
-    if db.session.commit():
-        return True
-    else:
-        return False
+    db.session.commit()
+    return True
 
 
 def modify_reader(reader_id, type_name)->bool:
@@ -127,10 +121,8 @@ def modify_reader(reader_id, type_name)->bool:
         return False
     reader.type_name = type_name
     db.session.add(reader)
-    if db.session.commit():
-        return True
-    else:
-        return False
+    db.session.commit()
+    return True
 
 def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, staff_id,reason)->bool:
     '''
@@ -145,10 +137,8 @@ def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id
     entering = BookEntering(book_id=book_id, staff_id=staff_id,reason=reason)
     db.session.add(book)
     db.session.add(entering)
-    if db.session.commit():
-        return True
-    else:
-        return False
+    db.session.commit()
+    return True
 
 def add_out(book_id, date, reason, staff_id)->bool:
     '''
@@ -162,33 +152,35 @@ def add_out(book_id, date, reason, staff_id)->bool:
     bookout = BookOut(book_id=book_id, date=date, reason=reason, staff_id=staff_id)
     book.availability = False
     db.session.add(bookout)
-    if db.session.commit():
-        return True
-    else:
-        return False
+    db.session.commit()
+    return True
 
 def admin_modify_info(admin_id, account, password)->bool:
     '''
     修改管理员信息,返回是否修改成功
     id不修改
     password若为空则不修改
+    检查account是否重复
     '''
+    if Admin.query.filter(Admin.account == account).first() != None:
+        return False
     admin = Admin.query.get(admin_id)
     admin.account = account
     if password:
         admin.set_password(password)
     db.session.add(admin)
-    if db.session.commit():
-        return True
-    else:
-        return False
+    db.session.commit()
+    return True
 
 def staff_modify_info(staff_id, name, age, id_card, phone_number, address, account, password)->bool:
     '''
     修改员工信息,返回是否修改成功
     id不修改
     password若为空则不修改
+    检查account是否重复
     '''
+    if Staff.query.filter(Staff.account == account).first() != None:
+        return False
     staff = Staff.query.get(staff_id)
     staff.name = name
     staff.age = age
@@ -199,17 +191,18 @@ def staff_modify_info(staff_id, name, age, id_card, phone_number, address, accou
     if password:
         staff.set_password(password)
     db.session.add(staff)
-    if db.session.commit():
-        return True
-    else:
-        return False
+    db.session.commit()
+    return True
 
 def reader_modify_info(reader_id, name, id_card, account, password)->bool:
     '''
     修改读者信息,返回是否修改成功
     id不修改
     password若为空则不修改
+    检查account是否重复
     '''
+    if Reader.query.filter(Reader.account == account).first() != None:
+        return False
     reader = Reader.query.get(reader_id)
     reader.name = name
     reader.id_card = id_card
@@ -217,19 +210,18 @@ def reader_modify_info(reader_id, name, id_card, account, password)->bool:
     if password:
         reader.set_password(password)
     db.session.add(reader)
-    if db.session.commit():
-        return True
-    else:
-        return False
+    db.session.commit()
+    return True
 
 def add_new_staff(account, password)->bool:
     '''
     添加新员工,返回是否添加成功
+    检查account是否重复
     '''
+    if Staff.query.filter(Staff.account == account).first() != None:
+        return False
     staff = Staff(account=account)
     staff.set_password(password)
     db.session.add(staff)
-    if db.session.commit():
-        return True
-    else:
-        return False
+    db.session.commit()
+    return True

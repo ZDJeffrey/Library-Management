@@ -180,18 +180,19 @@ def add_publisher(publisher_name, publisher_address)->bool:
     '''
     添加出版社,返回是否添加成功
     '''
-    new_publisher = Publisher(publisher_name=publisher_name, address=publisher_address)
-    db.session.add(new_publisher)
+    publisher_id = Publisher.query.order_by(Publisher.publisher_id.desc()).first().publisher_id + 1
+    publisher = Publisher(publisher_id=publisher_id, publisher_name=publisher_name, address=publisher_address)
+    db.session.add(publisher)
     db.session.commit()
     return True
-
 
 def add_stack(stack_name, stack_address, stack_open_time)->bool:
     '''
     添加书库,返回是否添加成功
     '''
-    new_stack = Stack(stack_name=stack_name, location=stack_address, opening=stack_open_time)
-    db.session.add(new_stack)
+    stack_id = Stack.query.order_by(Stack.stack_id.desc()).first().stack_id + 1
+    stack = Stack(stack_id=stack_id,stack_name=stack_name, location=stack_address, opening=stack_open_time)
+    db.session.add(stack)
     db.session.commit()
     return True
 
@@ -200,46 +201,112 @@ def modify_reader(reader_id, type_name)->bool:
     '''
     修改读者类型,返回是否修改成功
     '''
-    pass
+    reader = Reader.query.filter(Reader.reader_id == reader_id).first()
+    if reader == None:
+        return False
+    reader.type_name = type_name
+    db.session.add(reader)
+    db.session.commit()
+    return True
 
-def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, staff_id)->bool:
+def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, staff_id,reason)->bool:
     '''
     添加入库书籍,返回是否添加成功
+    book的外键publisher_id和stack_id需要先查询出对应的id，如果没有则需要先添加
     '''
-    pass
+    if Publisher.query.filter(Publisher.publisher_id == publisher_id).first() == None:
+        return False
+    if Stack.query.filter(Stack.stack_id == stack_id).first() == None:
+        return False
+    book = Book(book_id=book_id, ISBN=ISBN, type=type_name, title=title, author=author, publisher_id=publisher_id,availability=True, state=True, place=place, stack_id=stack_id)
+    entering = BookEntering(book_id=book_id, staff_id=staff_id,reason=reason)
+    db.session.add(book)
+    db.session.add(entering)
+    db.session.commit()
+    return True
 
 def add_out(book_id, date, reason, staff_id)->bool:
     '''
     添加出库书籍,返回是否添加成功
+    出库后不再被收录
+    出库时需要确定书籍是否被借出,若被借出则需要先还书，先还书的操作在借书时已经完成
     '''
-    pass
+    book = Book.query.get(book_id)
+    if book.availability == False or book.state == False:
+        return False
+    bookout = BookOut(book_id=book_id, date=date, reason=reason, staff_id=staff_id)
+    book.availability = False
+    db.session.add(bookout)
+    db.session.commit()
+    return True
 
 def admin_modify_info(admin_id, account, password)->bool:
     '''
     修改管理员信息,返回是否修改成功
     id不修改
     password若为空则不修改
+    检查account是否重复
     '''
-    pass
+    if Admin.query.filter(Admin.account == account).first() != None:
+        return False
+    admin = Admin.query.get(admin_id)
+    admin.account = account
+    if password:
+        admin.set_password(password)
+    db.session.add(admin)
+    db.session.commit()
+    return True
 
 def staff_modify_info(staff_id, name, age, id_card, phone_number, address, account, password)->bool:
     '''
     修改员工信息,返回是否修改成功
     id不修改
     password若为空则不修改
+    检查account是否重复
     '''
-    pass
+    if Staff.query.filter(Staff.account == account).first() != None:
+        return False
+    staff = Staff.query.get(staff_id)
+    staff.name = name
+    staff.age = age
+    staff.id_card = id_card
+    staff.phone_number = phone_number
+    staff.address = address
+    staff.account = account
+    if password:
+        staff.set_password(password)
+    db.session.add(staff)
+    db.session.commit()
+    return True
 
 def reader_modify_info(reader_id, name, id_card, account, password)->bool:
     '''
     修改读者信息,返回是否修改成功
     id不修改
     password若为空则不修改
+    检查account是否重复
     '''
-    pass
+    if Reader.query.filter(Reader.account == account).first() != None:
+        return False
+    reader = Reader.query.get(reader_id)
+    reader.name = name
+    reader.id_card = id_card
+    reader.account = account
+    if password:
+        reader.set_password(password)
+    db.session.add(reader)
+    db.session.commit()
+    return True
 
 def add_new_staff(account, password)->bool:
     '''
     添加新员工,返回是否添加成功
+    检查account是否重复
     '''
-    pass
+    if Staff.query.filter(Staff.account == account).first() != None:
+        return False
+    staff = Staff(account=account)
+    staff.set_password(password)
+    db.session.add(staff)
+    db.session.commit()
+    return True

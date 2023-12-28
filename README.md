@@ -1,7 +1,9 @@
 # 图书管理系统
+
 这是一个使用Flask实现的简单的图书管理系统，Flask是一个轻量级的Python Web应用框架。
 
 ## 需求
+
 - flask（网站）
 - flask-login（用户登录）
 - flask-sqlalchemy（数据库交互）
@@ -11,6 +13,7 @@
 - coverage（测试应用，暂时不需要）
 
 ## 文件结构
+
 ```
 .
 ├── library_management  # 应用包
@@ -28,33 +31,44 @@
 ```
 
 ## 安装
+
 - 克隆仓库
 - 安装依赖
 - 初始化数据库
-    ```shell
-    flask initdb --drop
-    ```
-    若修改了数据库关系模式，则需要重新初始化数据库
+
+  ```shell
+  flask initdb --drop
+  ```
+
+  若修改了数据库关系模式，则需要重新初始化数据库
 - 创建测试数据
-    ```shell
-    flask forge
-    ```
-    导入测试数据，以便测试应用
+
+  ```shell
+  flask forge
+  ```
+
+  导入测试数据，以便测试应用
 - 创建管理员账户
-    ```shell
-    flask admin
-    ```
-    创建管理员账户，以便登录管理网站
+
+  ```shell
+  flask admin
+  ```
+
+  创建管理员账户，以便登录管理网站
 - 运行应用
-    ```shell
-    flask run
-    ```
-    运行网站，访问[http://127.0.0.1:5000/](http://127.0.0.1:5000/)，其余路由参见views.py文件
+
+  ```shell
+  flask run
+  ```
+
+  运行网站，访问[http://127.0.0.1:5000/](http://127.0.0.1:5000/)，其余路由参见views.py文件
 
 # Library-Management
+
 This is a simple Book Management System implemented using Flask, a lightweight web application framework for Python.
 
 ## Requirements
+
 - flask
 - flask-login
 - flask-sqlalchemy
@@ -63,6 +77,7 @@ This is a simple Book Management System implemented using Flask, a lightweight w
 - 
 
 ## File Structure
+
 ```
 .
 ├── library_management  # Application package
@@ -80,24 +95,27 @@ This is a simple Book Management System implemented using Flask, a lightweight w
 ```
 
 ## Installation
+
 - Clone the repository
 - Install the requirements
 - Initialize the database
-    ```shell
-    flask initdb --drop
-    ```
+
+  ```shell
+  flask initdb --drop
+  ```
 - Create fake data to test the application
-    ```shell
-    flask forge
-    ```
+
+  ```shell
+  flask forge
+  ```
 - Create an administrator account
-    ```shell
-    flask admin
-    ```
+
+  ```shell
+  flask admin
+  ```
 - Run the application
-    ```shell
-    flask run
-    ```
 
-
+  ```shell
+  flask run
+  ```
 

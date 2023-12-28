@@ -243,14 +243,13 @@ def book_out_add():
         return redirect(url_for('index'))
     if request.method == 'POST':
         book_id = request.form['book_id']
-        date = request.form['date']
         reason = request.form['reason']
-        if add_out(book_id, date, reason, staff_id=current_user.staff_id):
+        if add_out(book_id, reason, staff_id=current_user.staff_id):
             flash('添加成功')
             return redirect(url_for('book_out'))
         else:
             flash('添加失败')
-            return render_template('out_add.html', book_id=book_id, date=date, reason=reason)
+            return render_template('out_add.html', book_id=book_id, reason=reason)
     return render_template('out_add.html')
 
 

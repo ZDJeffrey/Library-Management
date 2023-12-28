@@ -104,7 +104,6 @@ def add_publisher(publisher_name, publisher_address)->bool:
         return True
     else:
         return False
-    pass
 
 def add_stack(stack_name, stack_address, stack_open_time)->bool:
     '''
@@ -118,7 +117,6 @@ def add_stack(stack_name, stack_address, stack_open_time)->bool:
     else:
         return False
 
-    pass
 
 def modify_reader(reader_id, type_name)->bool:
     '''
@@ -133,7 +131,6 @@ def modify_reader(reader_id, type_name)->bool:
         return True
     else:
         return False
-    pass
 
 def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, staff_id,reason)->bool:
     '''
@@ -152,7 +149,6 @@ def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id
         return True
     else:
         return False
-    pass
 
 def add_out(book_id, date, reason, staff_id)->bool:
     '''
@@ -170,7 +166,6 @@ def add_out(book_id, date, reason, staff_id)->bool:
         return True
     else:
         return False
-    pass
 
 def admin_modify_info(admin_id, account, password)->bool:
     '''
@@ -187,7 +182,6 @@ def admin_modify_info(admin_id, account, password)->bool:
         return True
     else:
         return False
-    pass
 
 def staff_modify_info(staff_id, name, age, id_card, phone_number, address, account, password)->bool:
     '''
@@ -209,7 +203,6 @@ def staff_modify_info(staff_id, name, age, id_card, phone_number, address, accou
         return True
     else:
         return False
-    pass
 
 def reader_modify_info(reader_id, name, id_card, account, password)->bool:
     '''
@@ -228,7 +221,6 @@ def reader_modify_info(reader_id, name, id_card, account, password)->bool:
         return True
     else:
         return False
-    pass
 
 def add_new_staff(account, password)->bool:
     '''

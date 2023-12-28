@@ -38,12 +38,13 @@ def book_join_publisher_search_by(search_type, search_text):
     search_type为搜索类型(id,title,author,ISBN,publisher),search_text为搜索内容
     '''
     if search_type == 'id':
-        # ret = Book.query.filter(Book.book_id == search_text).join(
-        #     Publisher, Book.publisher_id == Publisher.publisher_id).add_column(
-        #     Publisher.publisher_name).order_by(Book.title).all()
-        ret = db.session.query(Book.book_id, Book.title, Book.author, Book.ISBN, Book.place, Book.state, Book.publisher_id,
-            Publisher.publisher_name).filter(Book.book_id == search_text).filter(
-            Book.publisher_id == Publisher.publisher_id).order_by(Book.book_id).all()
+        # TODO: 搜索结果名称
+        ret = Book.query.filter(Book.book_id == search_text).join(
+            Publisher, Book.publisher_id == Publisher.publisher_id).add_column(
+            Publisher.publisher_name).order_by(Book.title).all()
+        # ret = db.session.query(Book.book_id, Book.title, Book.author, Book.ISBN, Book.place, Book.state, Book.publisher_id,
+        #     Publisher.publisher_name).filter(Book.book_id == search_text).filter(
+        #     Book.publisher_id == Publisher.publisher_id).order_by(Book.book_id).all()
     elif search_type == 'title':
         ret = db.session.query(Book.book_id, Book.title, Book.author, Book.ISBN, Book.place, Book.state, Book.publisher_id,
             Publisher.publisher_name).filter(Book.title == search_text).filter(
@@ -249,9 +250,9 @@ def admin_modify_info(admin_id, account, password)->bool:
     password若为空则不修改
     检查account是否重复
     '''
-    if Admin.query.filter(Admin.account == account).first() != None:
-        return False
     admin = Admin.query.get(admin_id)
+    if account!= admin.account and Admin.query.filter(Admin.account == account).first() != None:
+        return False
     admin.account = account
     if password:
         admin.set_password(password)
@@ -266,9 +267,9 @@ def staff_modify_info(staff_id, name, age, id_card, phone_number, address, accou
     password若为空则不修改
     检查account是否重复
     '''
-    if Staff.query.filter(Staff.account == account).first() != None:
-        return False
     staff = Staff.query.get(staff_id)
+    if account!=staff.account and Staff.query.filter(Staff.account == account).first() != None:
+        return False
     staff.name = name
     staff.age = age
     staff.id_card = id_card
@@ -288,9 +289,9 @@ def reader_modify_info(reader_id, name, id_card, account, password)->bool:
     password若为空则不修改
     检查account是否重复
     '''
-    if Reader.query.filter(Reader.account == account).first() != None:
-        return False
     reader = Reader.query.get(reader_id)
+    if account!=reader.account and Reader.query.filter(Reader.account == account).first() != None:
+        return False
     reader.name = name
     reader.id_card = id_card
     reader.account = account

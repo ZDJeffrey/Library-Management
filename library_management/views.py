@@ -81,6 +81,7 @@ def account_info():
                 return render_template('info.html', password=password)
     elif isinstance(current_user, Staff):
         if request.method == 'POST':
+            staff_id = current_user.staff_id
             name = request.form['name']
             age = request.form['age']
             id_card = request.form['id_card']
@@ -88,19 +89,24 @@ def account_info():
             address = request.form['address']
             account = request.form['account']
             password = request.form['password']
-            if staff_modify_info(current_user.staff_id, name, age, id_card, phone_number, address, account, password):
+            if staff_modify_info(staff_id, name, age, id_card, phone_number, address, account, password):
                 flash('修改成功')
+                logout_user()
+                login_user(Staff.query.get(staff_id))
             else:
                 flash('修改失败')
                 return render_template('info.html', password=password)
     elif isinstance(current_user, Reader):
         if request.method == 'POST':
+            reader_id = current_user.reader_id
             name = request.form['name']
             id_card = request.form['id_card']
             account = request.form['account']
             password = request.form['password']
-            if reader_modify_info(current_user.reader_id, name, id_card, account, password):
+            if reader_modify_info(reader_id, name, id_card, account, password):
                 flash('修改成功')
+                logout_user()
+                login_user(Reader.query.get(reader_id))
             else:
                 flash('修改失败')
         reader_type = ReaderType.query.get(current_user.type_name)

@@ -49,11 +49,13 @@
                     <tr>
                         <td>{{ borrow.book_id }}</td>
                         <td>{{ borrow.date }}</td>
-                        {% if borrow.is_return %}
-                        <span class="label label-success">已归还</span>
-                        {% else %}
-                        <span class="label label-danger">未归还</span>
-                        {% endif %}
+                        <td>
+                                {% if borrow.is_return %}
+                                <span class="badge badge-success">已归还</span>
+                                {% else %}
+                                <span class="badge badge-danger">未归还</span>
+                                {% endif %}
+                        </td>
 					</tr>
                     {% endfor %}
 				</tbody>

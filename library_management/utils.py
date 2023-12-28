@@ -1,4 +1,5 @@
 from library_management.models import *
+from sqlalchemy import and_
 import datetime
 
 def user_register(name, id_card, account, password)->bool:
@@ -27,7 +28,7 @@ def book_join_publisher():
     ret = []
     # ret = Book.query.join(Publisher).all()
     ret = db.session.query(Book.book_id, Book.title, Book.author, Book.ISBN, Book.place, Book.state, Book.publisher_id,
-                     Publisher.publisher_name).filter(Book.publisher_id == Publisher.publisher_id).order_by(Book.title).all()
+                     Publisher.publisher_name).filter(Book.publisher_id == Publisher.publisher_id).order_by(Book.book_id).all()
     return ret
     # return []
 
@@ -42,32 +43,32 @@ def book_join_publisher_search_by(search_type, search_text):
         #     Publisher.publisher_name).order_by(Book.title).all()
         ret = db.session.query(Book.book_id, Book.title, Book.author, Book.ISBN, Book.place, Book.state, Book.publisher_id,
             Publisher.publisher_name).filter(Book.book_id == search_text).filter(
-            Book.publisher_id == Publisher.publisher_id).order_by(Book.title).all()
+            Book.publisher_id == Publisher.publisher_id).order_by(Book.book_id).all()
     elif search_type == 'title':
         ret = db.session.query(Book.book_id, Book.title, Book.author, Book.ISBN, Book.place, Book.state, Book.publisher_id,
             Publisher.publisher_name).filter(Book.title == search_text).filter(
-            Book.publisher_id == Publisher.publisher_id).order_by(Book.title).all()
+            Book.publisher_id == Publisher.publisher_id).order_by(Book.book_id).all()
     elif search_type == 'author':
         # ret = Book.query.filter(Book.author == search_text).join(
         #     Publisher, Book.publisher_id == Publisher.publisher_id).add_column(
         #     Publisher.publisher_name).order_by(Book.title).all()
         ret = db.session.query(Book.book_id, Book.title, Book.author, Book.ISBN, Book.place, Book.state, Book.publisher_id,
             Publisher.publisher_name).filter(Book.author == search_text).filter(
-            Book.publisher_id == Publisher.publisher_id).order_by(Book.title).all()
+            Book.publisher_id == Publisher.publisher_id).order_by(Book.book_id).all()
     elif search_type == 'ISBN':
         # ret = Book.query.filter(Book.ISBN == search_text).join(
         #     Publisher, Book.publisher_id == Publisher.publisher_id).add_column(
         #     Publisher.publisher_name).order_by(Book.title).all()
         ret = db.session.query(Book.book_id, Book.title, Book.author, Book.ISBN, Book.place, Book.state, Book.publisher_id,
             Publisher.publisher_name).filter(Book.ISBN == search_text).filter(
-            Book.publisher_id == Publisher.publisher_id).order_by(Book.title).all()
+            Book.publisher_id == Publisher.publisher_id).order_by(Book.book_id).all()
     elif search_type == 'publisher':
         # ret = Book.query.filter(Publisher.publisher_name == search_text).join(
         #     Publisher,Book.publisher_id == Publisher.publisher_id).add_column(
         #     Publisher.publisher_name).order_by(Book.title).all()
         ret = db.session.query(Book.book_id, Book.title, Book.author, Book.ISBN, Book.place, Book.state, Book.publisher_id,
             Publisher.publisher_name).filter(Publisher.publisher_name == search_text).filter(
-            Book.publisher_id == Publisher.publisher_id).order_by(Book.title).all()
+            Book.publisher_id == Publisher.publisher_id).order_by(Book.book_id).all()
     else:
         ret = []
     return ret
@@ -142,7 +143,7 @@ def borrow_book(book_id, reader_id)->bool:
         # return False
 
     # 检验读者是否超过借书数量限制
-    borrow_count = Borrow.query.filter(Borrow.reader_id == reader_id).count()
+    borrow_count = Borrow.query.filter(and_(Borrow.reader_id == reader_id, Borrow.is_return == False)).count()
     if borrow_count >= reader_type.available_number:
         print('借书数量超过限制')
         return False
@@ -174,7 +175,6 @@ def user_borrow_history(reader_id):
         Borrow.reader_id == reader_id).filter(
         Book.book_id == Borrow.book_id).order_by(Borrow.date.desc()).all()
     return books
-    # return []
 
 def add_publisher(publisher_name, publisher_address)->bool:
     '''
@@ -209,7 +209,7 @@ def modify_reader(reader_id, type_name)->bool:
     db.session.commit()
     return True
 
-def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, staff_id,reason)->bool:
+def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, reason, staff_id)->bool:
     '''
     添加入库书籍,返回是否添加成功
     book的外键publisher_id和stack_id需要先查询出对应的id，如果没有则需要先添加
@@ -219,23 +219,25 @@ def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id
     if Stack.query.filter(Stack.stack_id == stack_id).first() == None:
         return False
     book = Book(book_id=book_id, ISBN=ISBN, type=type_name, title=title, author=author, publisher_id=publisher_id,availability=True, state=True, place=place, stack_id=stack_id)
-    entering = BookEntering(book_id=book_id, staff_id=staff_id,reason=reason)
+    entering = BookEntering(book_id=book_id, staff_id=staff_id,reason=reason, date=datetime.date.today())
     db.session.add(book)
     db.session.add(entering)
     db.session.commit()
     return True
 
-def add_out(book_id, date, reason, staff_id)->bool:
+def add_out(book_id, reason, staff_id)->bool:
     '''
     添加出库书籍,返回是否添加成功
     出库后不再被收录
     出库时需要确定书籍是否被借出,若被借出则需要先还书，先还书的操作在借书时已经完成
     '''
     book = Book.query.get(book_id)
+    print(book.availability, book.state)
     if book.availability == False or book.state == False:
         return False
-    bookout = BookOut(book_id=book_id, date=date, reason=reason, staff_id=staff_id)
+    bookout = BookOut(book_id=book_id, date=datetime.date.today(), reason=reason, staff_id=staff_id)
     book.availability = False
+    book.state = False
     db.session.add(bookout)
     db.session.commit()
     return True

@@ -1,24 +1,21 @@
 # 图书管理系统
 这是一个使用Flask实现的简单的图书管理系统，Flask是一个轻量级的Python Web应用框架。
-
+    <div style="display: flex; justify-content: center;">
+        <img src="img/flask.png" style="max-height: 400px;">
+    </div>
 ## 需求
 - flask（网站）
 - flask-login（用户登录）
 - flask-sqlalchemy（数据库交互）
 - python-dotenv（环境变量配置）
 - colorama（命令行着色，flask依赖）
-- flask-wtf（表单验证，暂时未用到）
-- coverage（测试应用，暂时不需要）
 
 ## 文件结构
 ```
 .
 ├── library_management  # 应用包
 │   ├── static          # 静态文件
-│   ├── templates       # 模板
-|   |   ├── base.html   # 基础模板
-|   |   ├── index.html  # 首页模板
-|   |   ├── login.html  # 登录模板
+│   ├── templates       # 模板文件
 │   ├── __init__.py     # 应用实例
 │   ├── commands.py     # 自定义命令
 │   ├── models.py       # 模型
@@ -26,7 +23,68 @@
 ├── wsgi.py             # 环境变量加载器
 ├── .flaskenv           # Flask环境变量
 ```
-
+## 功能
+- 登录
+    <div style="display: flex; justify-content: center;">
+        <img src="img/login.png" style="max-height: 400px;">
+    </div>
+- 修改/查看个人信息
+    <div style="display: flex; justify-content: center;">
+        <img src="img/info.png" style="max-height: 400px;">
+    </div>
+- 书库查询
+    <div style="display: flex; justify-content: center;">
+        <img src="img/index.png" style="max-height: 400px;">
+    </div>
+- 书库查询
+    <div style="display: flex; justify-content: center;">
+        <img src="img/stack.png" style="max-height: 400px;">
+    </div>
+- 出版社查询
+    <div style="display: flex; justify-content: center;">
+        <img src="img/publisher.png" style="max-height: 400px;">
+    </div>
+- 读者
+  - 注册
+        <div style="display: flex; justify-content: center;">
+            <img src="img/register.png" style="max-height: 400px;">
+        </div>
+  - 借书
+    <div style="display: flex; justify-content: center;">
+        <img src="img/borrow.png" style="max-height: 400px;">
+    </div>
+  - 还书
+    <div style="display: flex; justify-content: center;">
+        <img src="img/return.png" style="max-height: 400px;">
+    </div>
+- 职工
+  - 图书信息修改
+        <div style="display: flex; justify-content: center;">
+            <img src="img/book_modify.png" style="max-height: 400px;">
+        </div>
+  - 图书入库
+        <div style="display: flex; justify-content: center;">
+            <img src="img/book_enter.png" style="max-height: 200px;">
+            <img src="img/book_enter_add.png" style="max-height: 200px;">
+        </div>
+  - 图书出库
+        <div style="display: flex; justify-content: center;">
+            <img src="img/book_out.png" style="max-height: 200px;">
+            <img src="img/book_out_add.png" style="max-height: 200px;">
+        </div>
+  - 读者管理
+        <div style="display: flex; justify-content: center;">
+            <img src="img/reader_management.png" style="max-height: 400px;">
+        </div>
+- 管理员
+  - 职工管理
+        <div style="display: flex; justify-content: center;">
+            <img src="img/staff_management.png" style="max-height: 400px;">
+        </div>
+  - 新建职工
+        <div style="display: flex; justify-content: center;">
+            <img src="img/add_staff.png" style="max-height: 400px;">
+        </div>
 ## 安装
 - 克隆仓库
 - 安装依赖
@@ -60,7 +118,6 @@ This is a simple Book Management System implemented using Flask, a lightweight w
 - flask-sqlalchemy
 - python-dotenv
 - colorama
-- 
 
 ## File Structure
 ```

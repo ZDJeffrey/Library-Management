@@ -213,15 +213,15 @@ def book_enter_add():
         publisher_id = request.form['publisher_id']
         stack_id = request.form['stack_id']
         place = request.form['place']
-        print(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place)
-        if add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, staff_id=current_user.staff_id):
+        reason = request.form['reason']
+        if add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, reason, staff_id=current_user.staff_id):
             flash('添加成功')
             return redirect(url_for('book_enter'))
         else:
             flash('添加失败')
             publishers = Publisher.query.all()
             stacks = Stack.query.all()
-            return render_template('enter_add.html', publishers=publishers, stacks=stacks, title=title, book_id=book_id, ISBN=ISBN, type_name=type_name, author=author, publisher_id=publisher_id, stack_id=stack_id, place=place)
+            return render_template('enter_add.html', publishers=publishers, stacks=stacks, title=title, book_id=book_id, ISBN=ISBN, type_name=type_name, author=author, publisher_id=publisher_id, stack_id=stack_id, place=place, reason=reason)
     publishers = Publisher.query.all()
     stacks = Stack.query.all()
     return render_template('enter_add.html', publishers=publishers, stacks=stacks)

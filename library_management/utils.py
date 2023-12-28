@@ -111,7 +111,7 @@ def modify_reader(reader_id, type_name)->bool:
     '''
     pass
 
-def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, staff_id)->bool:
+def add_entering(title, book_id, ISBN, type_name, author, publisher_id, stack_id, place, reason, staff_id)->bool:
     '''
     添加入库书籍,返回是否添加成功
     '''

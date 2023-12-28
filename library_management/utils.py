@@ -1,13 +1,20 @@
 from library_management.models import *
+import datetime
 
 def user_register(name, id_card, account, password)->bool:
     '''
     读者注册,返回是否注册成功
     '''
+    # 验证身份证是否已经注册
+    if Reader.query.filter(Reader.id_card == id_card).first():
+        return False
+    # 验证账号是否已经注册
+    if Reader.query.filter(Reader.account == account).first():
+        return False
     # 读者类型默认为新人,信誉值默认为100
     next_id = Reader.query.order_by(Reader.reader_id.desc()).first().reader_id + 1
-    reader = Reader(reader_id=next_id, type_name='新人', name=name, id_card=id_card, account=account, credit=100,
-                    password_hash=password)
+    reader = Reader(reader_id=next_id, type_name='新人', name=name, id_card=id_card, account=account, credit=100)
+    reader.set_password(password)
     db.session.add(reader)
     db.session.commit()
     return True
@@ -82,7 +89,17 @@ def books_to_return(reader_id):
     读者借阅的书籍,返回书籍列表(书籍ID、书名、借阅时间、剩余时间)
     [{book_id, title, date, day_left}]
     '''
-    books = Borrow.query(Book.book_id, title, date, day_left).filter(Borrow.reader_id == reader_id).all()
+    # books = Borrow.query(Book.book_id, Book.title, Borrow.date).filter(Borrow.reader_id == reader_id).all()
+    reader_type = Reader.query.filter(Reader.reader_id == reader_id).first().type_name
+    available_number = ReaderType.query.filter(ReaderType.type_name == reader_type).first().available_number
+    books = db.session.query(
+        Book.book_id, Book.title, Borrow.date,  (Borrow.date + available_number - datetime.date.today()).label('day_left')).filter(
+        Borrow.reader_id == reader_id).filter(
+        Book.book_id == Borrow.book_id).filter(
+        Borrow.is_return == False).order_by(Borrow.date.desc()).all()
+    # for book in books:
+    #     day_left = available_number - (datetime.date.today() - book.date).days
+    #     book.append(day_left)
     return books
     pass
 
@@ -90,37 +107,35 @@ def return_book_by_id(book_id)->bool:
     '''
     读者还书,返回是否还书成功
     '''
-    # TODO：逾期惩罚
-    查找书籍和借阅记录
+    # TODO：逾期
+    # 查找书籍和借阅记录
     book = Book.query.filter(Book.book_id == book_id).first()
-    borrow = Borrow.query.filter(Borrow.book_id == book_id).first()
+    borrow = Borrow.query.filter(Borrow.book_id == book_id).order_by(Borrow.borrow_id.desc()).first()
 
     # 检验是否超期
-    reader = Reader.query.filter(Reader.reader_id == borrow.reader_id).first()
-    reader_type = ReaderType.query.filter(ReaderType.type_name == reader.type_name).first()
-    if (datetime.date.today() - borrow.date).days > reader_type.day_limit:
-        # 超期
-        print('已逾期，请找管理员当面核销')
-        # reader.credit -= 5
-        return False
+    # reader = Reader.query.filter(Reader.reader_id == borrow.reader_id).first()
+    # reader_type = ReaderType.query.filter(ReaderType.type_name == reader.type_name).first()
+    # if (datetime.date.today() - borrow.date).days > reader_type.day_limit:
+    #     # 超期
+    #     print('已逾期，请找管理员当面核销')
+    #     # reader.credit -= 5
+    #     return False
 
     # 修改书籍和借阅记录并提交
-    book.state = False
+    book.state = True
     borrow.is_return = True
-    db.session.add(book)
-    db.session.add(borrow)
-    if db.session.commit():
-        return True
-    else:
-        return False
-    pass
+    # db.session.add(book)
+    # db.session.add(borrow)
+    db.session.commit()
+    return True
+
 
 def borrow_book(book_id, reader_id)->bool:
     '''
     读者借书,返回是否借书成功
     '''
     # TODO：讨论具体信誉值
-    检验读者是否有借书资格
+    # 检验读者是否有借书资格
     reader = Reader.query.filter(Reader.reader_id == reader_id).first()
     reader_type = ReaderType.query.filter(ReaderType.type_name == reader.type_name).first()
     # if reader.credit < 60: # 信誉值小于60则不能借书
@@ -128,19 +143,22 @@ def borrow_book(book_id, reader_id)->bool:
 
     # 检验读者是否超过借书数量限制
     borrow_count = Borrow.query.filter(Borrow.reader_id == reader_id).count()
-    if borrow_count >= reader_type.book_limit:
+    if borrow_count >= reader_type.available_number:
         print('借书数量超过限制')
         return False
 
     # 检验书籍是否可借
     book = Book.query.filter(Book.book_id == book_id).first()
-    if book.state == True: # 书籍已被借阅
+    if book.state == False: # 书籍已被借阅
         print('书籍已被借阅')
         return False
 
     # 修改书籍和借阅记录并提交
-    book.state = True
-    borrow = Borrow(book_id=book_id, reader_id=reader_id, date=datetime.date.today(), is_return=False)
+    book.state = False
+    new_id = Borrow.query.order_by(Borrow.borrow_id.desc()).first().borrow_id + 1
+    if not new_id:
+        new_id = 1
+    borrow = Borrow(borrow_id=new_id, book_id=book_id, reader_id=reader_id, date=datetime.date.today(), is_return=False)
     db.session.add(book)
     db.session.add(borrow)
     db.session.commit()
@@ -152,7 +170,9 @@ def user_borrow_history(reader_id):
     读者借书历史,返回书籍列表(书籍ID、书名、借阅时间、是否归还)
     [{book_id, title, date, is_return}]
     '''
-    books = Borrow.query(Book.book_id, title, date, is_return).filter(Borrow.reader_id == reader_id).all()
+    books = db.session.query(Book.book_id, Book.title, Borrow.date, Borrow.is_return).filter(
+        Borrow.reader_id == reader_id).filter(
+        Book.book_id == Borrow.book_id).order_by(Borrow.date.desc()).all()
     return books
     # return []
 

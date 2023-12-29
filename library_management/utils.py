@@ -17,7 +17,7 @@ def user_register(name, id_card, account, password) -> bool:
     next_id = Reader.query.order_by(Reader.reader_id.desc()).first().reader_id + 1
     reader = Reader(
         reader_id=next_id,
-        type_name="新人",
+        type_name="初级",
         name=name,
         id_card=id_card,
         account=account,
@@ -167,31 +167,25 @@ def books_to_return(reader_id):
         .first()
         .available_number
     )
+    # todo: 查询已借阅书籍
     books = (
         db.session.query(
-            Book.book_id,
-            Book.title,
-            Borrow.date,
+            Borrow.book_id.label("book_id"),
+            Borrow.date.label("date"),
             (Borrow.date + available_number - datetime.date.today()).label("day_left"),
         )
-        .filter(Borrow.reader_id == reader_id)
-        .filter(Book.book_id == Borrow.book_id)
-        .filter(Borrow.is_return == False)
-        .order_by(Borrow.date.desc())
-        .all()
+        .join(Book)
+        .add_column(Book.title.label("title"))
+        .filter(Borrow.reader_id == reader_id, Borrow.is_return == False)
     )
-    # for book in books:
-    #     day_left = available_number - (datetime.date.today() - book.date).days
-    #     book.append(day_left)
     return books
-    pass
 
 
 def return_book_by_id(book_id) -> bool:
     """
     读者还书,返回是否还书成功
     """
-    # TODO：逾期
+    # todo：逾期
     # 查找书籍和借阅记录
     book = Book.query.filter(Book.book_id == book_id).first()
     borrow = (
@@ -212,8 +206,8 @@ def return_book_by_id(book_id) -> bool:
     # 修改书籍和借阅记录并提交
     book.state = True
     borrow.is_return = True
-    # db.session.add(book)
-    # db.session.add(borrow)
+    db.session.add(book)
+    db.session.add(borrow)
     db.session.commit()
     return True
 
@@ -222,12 +216,14 @@ def borrow_book(book_id, reader_id) -> bool:
     """
     读者借书,返回是否借书成功
     """
-    # TODO：讨论具体信誉值
+    # todo：讨论具体信誉值
     # 检验读者是否有借书资格
     reader = Reader.query.filter(Reader.reader_id == reader_id).first()
     reader_type = ReaderType.query.filter(
         ReaderType.type_name == reader.type_name
     ).first()
+    # print(reader)
+    # print(reader_type)
     # if reader.credit < 60: # 信誉值小于60则不能借书
     # return False
 

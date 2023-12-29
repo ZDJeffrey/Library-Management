@@ -167,7 +167,6 @@ def books_to_return(reader_id):
         .first()
         .available_number
     )
-    # todo: 查询已借阅书籍
     books = (
         db.session.query(
             Borrow.book_id.label("book_id"),

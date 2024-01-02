@@ -279,6 +279,130 @@
 |      days       |     int     |           |   最长借阅天数   |
 
 
+## 部署与应用
+### 系统部署架构
+该图书管理系统采用了B/S架构，即浏览器/服务器架构，用户通过浏览器访问服务器，服务器处理用户的请求并返回结果给用户。本系统基于Flask框架，通过SQLAlchemy进行数据库操作，使用Bootstrap框架进行前端页面设计，使用Jinja2模板引擎进行页面渲染。
+### 环境配置
+图书管理系统主要依赖库如下：
+- flask（网站框架）
+- flask-login（用户登录）
+- flask-sqlalchemy（数据库交互）
+- python-dotenv（环境变量配置）
+
+本系统依赖于Python(>=3.7)，安装Python后，通过pip指令安装依赖。
+```shell
+pip install -r requirements.txt
+```
+### 运行
+以下操作均在项目根目录下进行。
+- 环境变量
+    创建`.env`文件，配置环境变量。`SECRET_KEY`为密钥，需要通过随机生成字符串`uuid.uuid4().hex`进行修改，如下所示：
+    ```
+    SECRET_KEY=dev              # Flask的密钥
+    DATABASE_FILE=library.db    # 数据库文件名
+    ```
+    若需要将项目于生产环境运行，需要将`.flaskenv`文件进行修改
+    ```
+    FLASK_APP=library_management
+    FLASK_ENV=production
+    FLASK_DEBUG=0
+    ```
+- 数据库初始化
+    ```shell
+    flask init --drop
+    ```
+    初始化数据库，`-drop`参数表示删除原有数据库，重新创建。
+- 初始数据
+    ```shell
+    flask forge
+    ```
+    导入初始数据用于测试。
+- 管理员注册
+    ```shell
+    flask admin
+    ```
+    输入管理员账号密码，即可注册管理员账号。
+- 运行
+    ```shell
+    flask run
+    ```
+    运行网站，通过访问端口5000即可访问网站，本地可以通过`http://127.0.0.1:5000`访问。
+### 部分功能截图
+- 登录
+    在登录界面，可以选择登录的用户类型，包括读者、职工和管理员。
+    <div style="display: flex; justify-content: center;">
+        <img src="img/login.png" style="max-height: 400px;">
+    </div>
+- 修改/查看个人信息
+    用户可以该该界面修改个人信息并申请保存，若修改有效，则会提示修改成功。
+    <div style="display: flex; justify-content: center;">
+        <img src="img/info.png" style="max-height: 400px;">
+    </div>
+- 图书查询
+    图书查询作为图书管理系统的主页，可以通过ID、书名、作者、ISBN等信息查询书籍，并且可以根据每个条目后的按钮查看书籍的详细信息。
+    <div style="display: flex; justify-content: center;">
+        <img src="img/index.png" style="max-height: 400px;">
+    </div>
+- 书库查询
+    书库查询可以查看所有书库的相关信息，其中职工可以新增书库。
+    <div style="display: flex; justify-content: center;">
+        <img src="img/stack.png" style="max-height: 400px;">
+    </div>
+- 出版社查询
+    出版社查询可以查看所有出版社的相关信息，其中职工可以新增出版社。
+    <div style="display: flex; justify-content: center;">
+        <img src="img/publisher.png" style="max-height: 400px;">
+    </div>
+- 读者
+  - 注册
+        读者可以通过该界面注册账号，注册成功后会跳转到登录界面。
+        <div style="display: flex; justify-content: center;">
+            <img src="img/register.png" style="max-height: 400px;">
+        </div>
+  - 借书
+        在图书的详情界面，读者可以进行借书，若图书可以结果，则会提供借阅图书的按钮，点击后会根据读者的信息判断是否可以借阅，若可以借阅，则会提示借阅成功，否则会提示借阅失败。
+        <div style="display: flex; justify-content: center;">
+            <img src="img/borrow.png" style="max-height: 400px;">
+        </div>
+  - 还书
+        读者可以在归还书籍界面查看正在借阅的书籍及相关信息，并且可以进行归还书籍。
+        <div style="display: flex; justify-content: center;">
+            <img src="img/return.png" style="max-height: 400px;">
+        </div>
+- 职工
+  - 图书信息修改
+        在图书的详情界面，职工可以查看该书籍的历史借阅记录、入库记录以及出库记录，并且可以修改图书的信息。
+        <div style="display: flex; justify-content: center;">
+            <img src="img/book_modify.png" style="max-height: 400px;">
+        </div>
+  - 图书入库
+        职工可以查看所有入库记录，并且可以新增入库记录。
+        <div style="display: flex; justify-content: center;">
+            <img src="img/book_enter.png" style="max-height: 200px;">
+            <img src="img/book_enter_add.png" style="max-height: 200px;">
+        </div>
+  - 图书出库
+        职工可以查看所有出库记录，并且可以新增出库记录。
+        <div style="display: flex; justify-content: center;">
+            <img src="img/book_out.png" style="max-height: 200px;">
+            <img src="img/book_out_add.png" style="max-height: 200px;">
+        </div>
+  - 读者管理
+        职工可以查看所有读者，并通过详情按钮查看读者的详细信息，并允许对读者类型进行修改。
+        <div style="display: flex; justify-content: center;">
+            <img src="img/reader_management.png" style="max-height: 400px;">
+        </div>
+- 管理员
+  - 职工管理
+        管理员的主页显示所有职工的信息。
+        <div style="display: flex; justify-content: center;">
+            <img src="img/staff_management.png" style="max-height: 400px;">
+        </div>
+  - 新建职工
+        管理员可以新建职工账号。
+        <div style="display: flex; justify-content: center;">
+            <img src="img/add_staff.png" style="max-height: 400px;">
+        </div>
 
 
 

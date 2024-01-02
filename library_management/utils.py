@@ -334,10 +334,13 @@ def add_entering(
     """
     添加入库书籍,返回是否添加成功
     book的外键publisher_id和stack_id需要先查询出对应的id，如果没有则需要先添加
+    如果book_id已存在则返回False
     """
     if Publisher.query.filter(Publisher.publisher_id == publisher_id).first() == None:
         return False
     if Stack.query.filter(Stack.stack_id == stack_id).first() == None:
+        return False
+    if Book.query.filter(Book.book_id == book_id).first() != None:
         return False
     book = Book(
         book_id=book_id,

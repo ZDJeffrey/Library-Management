@@ -1,6 +1,6 @@
 # 需求建模
 
->  组员：张雄、郑圳毅、刘思迪
+> 组员：张雄、郑圳毅、刘思迪
 
 ## 系统功能性需求
 
@@ -150,16 +150,48 @@
 
 ## 业务用例的实现
 
-下面我们将介绍本系统涉及的重要业务用例，分别是：图书查询、图书借阅、图书入库、读者管理。
+下面我们将介绍本系统涉及的重要业务用例，分别是：读者注册、图书借阅、图书入库、读者管理。
 
-### 图书查询
+### 读者注册
+读者注册是读者用户使用本系统的第一步，也是最重要的一步。读者注册的主要参与者是读者，与系统的交互过程如下：
+1. 读者进入注册界面，输入姓名、身份证号、要注册的账号和账号密码等必要信息。
+2. 系统检查读者输入的信息是否符合要求，如果不符合要求，则提示读者重新输入。如果符合要求，则系统在数据库中添加读者信息。
+3. 读者注册成功，可以使用注册的账号密码登录系统，网页跳转到登录界面。
+4. 读者使用注册的账号密码登录系统，进入读者主界面。
+5. 读者进入个人信息界面，查看并完善修改个人信息。
 
 ### 图书借阅
-
+图书借阅是读者使用本系统的主要功能，也是本系统的核心功能。图书借阅的主要参与者是读者，与系统的交互过程如下：
+1. 读者在登录界面选择登录类型为读者，输入账号密码登录系统。
+2. 系统验证学生的账号和密码。
+3. 读者成功登录系统，进入读者主界面。
+4. 读者选择书籍查找类型，如按作者、书名、ISBN等方式查找，输入书籍信息。
+5. 系统根据读者输入的信息，从数据库中查找符合条件的书籍信息，返回给读者。
+6. 读者选择要借阅的书籍，点击借阅按钮。
+7. 系统检查书籍是否处于可借阅状态，如果不是，则提示读者该书籍不可借阅。
+8. 系统检查读者是否还可以借阅书籍，如果不可以，则提示读者已达到借阅上限。
+9. 读者借阅成功，系统将书籍状态改为不可借阅，将借阅信息添加到数据库中。
 ### 图书入库
-
+图书入库是职工使用本系统的主要功能，也是本系统的核心功能。图书入库的主要参与者是职工，与系统的交互过程如下：
+1. 职工在登录界面选择登录类型为职工，输入账号密码登录系统。
+2. 系统验证职工的账号和密码。
+3. 职工成功登录系统，进入职工主界面。
+4. 职工进入图书入库界面，输入书籍信息。
+5. 系统查询数据库检查书籍号是否已被使用，如果已被使用，则提示职工重新输入。
+6. 系统查询数据库检查出版社是否存在，如果不存在，则提示职工重新输入或者添加新的出版社。
+7. 系统查询数据库检查书库是否存在，如果不存在，则提示职工重新输入或者添加新的书库。
+8. 系统将书籍信息添加到数据库中。
+9. 系统添加入库信息到数据库中。
+10. 职工入库成功，返回入库主界面。
 ### 读者管理
-
+读者管理是职工的重要功能，职工应该定期查看读者信誉值，修改满足条件的读者的读者类型。读者管理的主要参与者是职工，与系统的交互过程如下：
+1. 职工在登录界面选择登录类型为职工，输入账号密码登录系统。
+2. 系统验证职工的账号和密码。
+3. 职工成功登录系统，进入职工主界面。
+4. 职工进入读者管理界面，检查读者信誉值和读者类型。
+5. 选择满足条件的读者，修改读者类型。
+6. 系统接收到职工的修改请求，修改读者类型。
+7. 职工修改成功.
 ## 数据库设计
 
 ### ER图
@@ -171,16 +203,16 @@
 
 本系统共有9张数据库表，分别是staff、book_out、book_entering、book、publisher、stack、borrow、reader、reader_type。下面分别对这些表进行介绍。
 
-|     表名      |                说明                |
-| :-----------: | :--------------------------------: |
-|     staff     |     员工表，用于存储员工的信息     |
-|   book_out    |   出库表，用于存储图书出库的信息   |
-| book_entering |   入库表，用于存储图书入库的信息   |
-|     book      |     图书表，用于存储图书的信息     |
-|   publisher   |   出版社表，用于存储出版社的信息   |
-|     stack     |     书库表，用于存储书库的信息     |
-|    borrow     |     借阅表，用于存储借阅的信息     |
-|    reader     |     读者表，用于存储读者的信息     |
+|      表名       |        说明         |
+|:-------------:|:-----------------:|
+|     staff     |   员工表，用于存储员工的信息   |
+|   book_out    |  出库表，用于存储图书出库的信息  |
+| book_entering |  入库表，用于存储图书入库的信息  |
+|     book      |   图书表，用于存储图书的信息   |
+|   publisher   |  出版社表，用于存储出版社的信息  |
+|     stack     |   书库表，用于存储书库的信息   |
+|    borrow     |   借阅表，用于存储借阅的信息   |
+|    reader     |   读者表，用于存储读者的信息   |
 |  reader_type  | 读者类型表，用于存储读者类型的信息 |
 
 
@@ -278,7 +310,107 @@
 | avaibook_number |     int     |           | 同时可借图书数量 |
 |      days       |     int     |           |   最长借阅天数   |
 
+# 模块设计
+本系统按照用户群体划分三个模块：管理员模块、职工模块和读者模块。管理员模块主要负责对职工的管理，包括职工账号的添加和删除；职工模块主要负责对图书的和读者的管理，包括图书的入库和出库、图书的添加和删除、读者类型的修改、书库开放时间管理、出版社信息管理、职工个人信息修改；读者模块主要负责对图书的借阅和归还、对个人信息的修改。本章选取职工模块的图书管理和读者模块的图书借阅和图书归还作为本系统的三个功能模块进行详细介绍，管理员模块功能比较简单，不再赘述。
 
+## 图书入库
+图书入库是职工的功能，即添加一本新的图书到图书馆的馆藏中。职工选择添加入库之后，跳转到图书入库页面，填写要添加的图书的信息后，点击添加按钮。系统会检查图书的信息是否正确，比如书库、出版社是否存在，书籍号是否已经被使用，如果信息正确，系统会将图书信息添加到数据库中，否则会提示职工重新填写信息。图书入库的流程图如下所示：
+<img src="./assets/addentering_flow.png" alt="addentering" style="zoom:67%;" />
 
+下面是图书入库的核心代码.当职工选择添加书籍入库之后，系统会检查书籍的信息是否正确，如果正确则将书籍信息和入库记录添加到数据库中，否则提示职工重新填写信息。
+```python
+def add_entering(
+    title,
+    book_id,
+    ISBN,
+    type_name,
+    author,
+    publisher_id,
+    stack_id,
+    place,
+    reason,
+    staff_id,
+) -> bool:
+    """
+    添加入库书籍,返回是否添加成功
+    book的外键publisher_id和stack_id需要先查询出对应的id，如果没有则需要先添加
+    如果book_id已存在则返回False
+    """
+    if Publisher.query.filter(Publisher.publisher_id == publisher_id).first() == None:
+        return False
+    if Stack.query.filter(Stack.stack_id == stack_id).first() == None:
+        return False
+    if Book.query.filter(Book.book_id == book_id).first() != None:
+        return False
+    book = Book(
+        book_id=book_id,
+        ISBN=ISBN,
+        type=type_name,
+        title=title,
+        author=author,
+        publisher_id=publisher_id,
+        availability=True,
+        state=True,
+        place=place,
+        stack_id=stack_id,
+    )
+    entering = BookEntering(
+        book_id=book_id, staff_id=staff_id, reason=reason, date=datetime.date.today()
+    )
+    db.session.add(book)
+    db.session.add(entering)
+    db.session.commit()
+    return True
+```
 
+## 图书借阅
+图书借阅是读者用户的功能，读者首先找到想要借阅的书籍，然后系统对读者状态和书籍状态进行判断，符合条件之后，系统在借阅表中添加一条借阅记录，然后将书籍的状态改为不可借阅。，读者成功借阅图书。图书借阅的流程图如下所示：
+<img src="./assets/borrow_book.png" alt="borrow_book" style="zoom:67%;" />
+
+下面是图书借阅的核心代码。系统先会检查读者的信誉值，信誉值过低的读者将失去借书资格；然后根据读者类型查询该读者最大的借阅数量和已借阅书籍数量，如果该读者已经借阅的书籍数量超过了最大借阅数量，则不能借阅；然后系统检查读者想要借阅的书籍是否处于可借阅的状态。如果书籍可以借阅，则系统在借阅表中添加一条借阅记录，然后将书籍的状态改为不可借阅，读者成功借阅图书。
+```python
+def borrow_book(book_id, reader_id) -> bool:
+    """
+    读者借书,返回是否借书成功
+    """
+    # todo：讨论具体信誉值
+    # 检验读者是否有借书资格
+    reader = Reader.query.filter(Reader.reader_id == reader_id).first()
+    reader_type = ReaderType.query.filter(
+        ReaderType.type_name == reader.type_name
+    ).first()
+    if reader.credit < 60: # 信誉值小于60则不能借书
+        return False
+
+    # 检验读者是否超过借书数量限制
+    borrow_count = Borrow.query.filter(
+        and_(Borrow.reader_id == reader_id, Borrow.is_return == False)
+    ).count()
+    if borrow_count >= reader_type.available_number:
+        print("借书数量超过限制")
+        return False
+
+    # 检验书籍是否可借
+    book = Book.query.filter(Book.book_id == book_id).first()
+    if book.state == False:  # 书籍已被借阅
+        print("书籍已被借阅")
+        return False
+
+    # 修改书籍和借阅记录并提交
+    book.state = False
+    new_id = Borrow.query.order_by(Borrow.borrow_id.desc()).first().borrow_id + 1
+    if not new_id:
+        new_id = 1
+    borrow = Borrow(
+        borrow_id=new_id,
+        book_id=book_id,
+        reader_id=reader_id,
+        date=datetime.date.today(),
+        is_return=False,
+    )
+    db.session.add(book)
+    db.session.add(borrow)
+    db.session.commit()
+    return True
+```
 

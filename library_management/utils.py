@@ -194,13 +194,15 @@ def return_book_by_id(book_id) -> bool:
     )
 
     # 检验是否超期
-    # reader = Reader.query.filter(Reader.reader_id == borrow.reader_id).first()
-    # reader_type = ReaderType.query.filter(ReaderType.type_name == reader.type_name).first()
-    # if (datetime.date.today() - borrow.date).days > reader_type.day_limit:
-    #     # 超期
-    #     print('已逾期，请找管理员当面核销')
-    #     # reader.credit -= 5
-    #     return False
+    reader = Reader.query.filter(Reader.reader_id == borrow.reader_id).first()
+    reader_type = db.session.query(ReaderType).filter(
+        ReaderType.type_name == reader.type_name
+    ).first()
+    if (datetime.date.today() - borrow.date).days > reader_type.days:
+        # 超期
+        print('已逾期，请找管理员当面核销')
+        # reader.credit -= 5
+        return False
 
     # 修改书籍和借阅记录并提交
     book.state = True

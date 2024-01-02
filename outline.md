@@ -1,7 +1,5 @@
 # 需求建模
 
->  组员：张雄、郑圳毅、刘思迪
-
 ## 系统功能性需求
 
 ​	本网站的基本目标是提供一个存储图书馆的书籍用户信息的平台，记录图书基本信息以及借阅情况，同时满足图书馆职员的管理需求和读者的查询借阅需求，方便更好的管理图书馆和在图书馆借阅书籍。
@@ -132,6 +130,7 @@
 - 每个出版社可以出版多本图书，出版社和书籍之间是一对多关系
 
 据此，画出系统的领域模型：
+
 <img src="./assets/library_management.drawio.png" alt="library_management.drawio" style="zoom: 50%;" />
 
 # 架构设计
@@ -197,6 +196,7 @@
 ### ER图
 
 本系统的ER图如下所示：
+
 <img src="./assets/E-R_diagram.png" alt="E-R_diagram" style="zoom:67%;" />
 
 ### 数据库关系模式
@@ -315,6 +315,7 @@
 
 ## 图书入库
 图书入库是职工的功能，即添加一本新的图书到图书馆的馆藏中。职工选择添加入库之后，跳转到图书入库页面，填写要添加的图书的信息后，点击添加按钮。系统会检查图书的信息是否正确，比如书库、出版社是否存在，书籍号是否已经被使用，如果信息正确，系统会将图书信息添加到数据库中，否则会提示职工重新填写信息。图书入库的流程图如下所示：
+
 <img src="./assets/addentering_flow.png" alt="addentering" style="zoom:67%;" />
 
 下面是图书入库的核心代码.当职工选择添加书籍入库之后，系统会检查书籍的信息是否正确，如果正确则将书籍信息和入库记录添加到数据库中，否则提示职工重新填写信息。
@@ -365,6 +366,7 @@ def add_entering(
 
 ## 图书借阅
 图书借阅是读者用户的功能，读者首先找到想要借阅的书籍，然后系统对读者状态和书籍状态进行判断，符合条件之后，系统在借阅表中添加一条借阅记录，然后将书籍的状态改为不可借阅。，读者成功借阅图书。图书借阅的流程图如下所示：
+
 <img src="./assets/borrow_book.png" alt="borrow_book" style="zoom:67%;" />
 
 下面是图书借阅的核心代码。系统先会检查读者的信誉值，信誉值过低的读者将失去借书资格；然后根据读者类型查询该读者最大的借阅数量和已借阅书籍数量，如果该读者已经借阅的书籍数量超过了最大借阅数量，则不能借阅；然后系统检查读者想要借阅的书籍是否处于可借阅的状态。如果书籍可以借阅，则系统在借阅表中添加一条借阅记录，然后将书籍的状态改为不可借阅，读者成功借阅图书。
@@ -413,10 +415,82 @@ def borrow_book(book_id, reader_id) -> bool:
     db.session.commit()
     return True
 ```
-## 部署与应用
-### 系统部署架构
+## 图书归还
+
+图书借阅同样是读者用户的功能，读者首先浏览自己的已状态为未归还的借阅记录，对于其中符合条件的记录，读者可以选择归还，同时系统将这条记录状态改为已归还，并将书籍的状态改为可借阅，这样就成功完成了图书的归还。图书归还的流程图如下所示：
+
+![return](./assets/return.png)
+
+具体实现代码方法如下。首先，获取对应读者的借阅信息：
+
+```python
+def books_to_return(reader_id):
+    """
+    读者借阅的书籍,返回书籍列表(书籍ID、书名、借阅时间、剩余时间)
+    [{book_id, title, date, day_left}]
+    """
+    # 获取读者类型和每次借阅期限
+    reader_type = Reader.query.filter(Reader.reader_id == reader_id).first().type_name
+    available_number = (
+        ReaderType.query.filter(ReaderType.type_name == reader_type)
+        .first()
+        .available_number
+    )
+    
+    # 查询该读者的未归还的借阅记录
+    books = (
+        db.session.query(
+            Borrow.book_id.label("book_id"),
+            Borrow.date.label("date"),
+            (Borrow.date + available_number - datetime.date.today()).label("day_left"),
+        )
+        .join(Book)
+        .add_column(Book.title.label("title"))
+        .filter(Borrow.reader_id == reader_id, Borrow.is_return == False)
+    )
+    return books
+```
+
+然后，根据已有记录，读者可以选择归还该图书。若没有逾期则可以顺利归还，若逾期，则操作失败，需要找图书管理员进行人工手续：
+
+```python
+def return_book_by_id(book_id) -> bool:
+    """
+    读者还书,返回是否还书成功
+    """
+    # 查找书籍和借阅记录
+    book = Book.query.filter(Book.book_id == book_id).first()
+    borrow = (
+        Borrow.query.filter(Borrow.book_id == book_id)
+        .order_by(Borrow.borrow_id.desc())
+        .first()
+    )
+
+    # 检验是否超期
+    reader = Reader.query.filter(Reader.reader_id == borrow.reader_id).first()
+    reader_type = db.session.query(ReaderType).filter(
+        ReaderType.type_name == reader.type_name
+    ).first()
+    if (datetime.date.today() - borrow.date).days > reader_type.days:
+        # 超期
+        return False
+
+    # 修改书籍和借阅记录并提交
+    book.state = True
+    borrow.is_return = True
+    db.session.add(book)
+    db.session.add(borrow)
+    db.session.commit()
+    return True
+```
+
+
+
+# 部署与应用
+
+## 系统部署架构
 该图书管理系统采用了B/S架构，即浏览器/服务器架构，用户通过浏览器访问服务器，服务器处理用户的请求并返回结果给用户。本系统基于Flask框架，通过SQLAlchemy进行数据库操作，使用Bootstrap框架进行前端页面设计，使用Jinja2模板引擎进行页面渲染。
-### 环境配置
+## 环境配置
 图书管理系统主要依赖库如下：
 - flask（网站框架）
 - flask-login（用户登录）
@@ -427,7 +501,7 @@ def borrow_book(book_id, reader_id) -> bool:
 ```shell
 pip install -r requirements.txt
 ```
-### 运行
+## 运行
 以下操作均在项目根目录下进行。
 - 环境变量
     创建`.env`文件，配置环境变量。`SECRET_KEY`为密钥，需要通过随机生成字符串`uuid.uuid4().hex`进行修改，如下所示：
@@ -461,7 +535,7 @@ pip install -r requirements.txt
     flask run
     ```
     运行网站，通过访问端口5000即可访问网站，本地可以通过`http://127.0.0.1:5000`访问。
-### 部分功能截图
+## 部分功能截图
 - 登录
     在登录界面，可以选择登录的用户类型，包括读者、职工和管理员。
     <div style="display: flex; justify-content: center;">
@@ -510,11 +584,12 @@ pip install -r requirements.txt
             <img src="img/book_modify.png" style="max-height: 400px;">
         </div>
   - 图书入库
-        职工可以查看所有入库记录，并且可以新增入库记录。
-        <div style="display: flex; justify-content: center;">
-            <img src="img/book_enter.png" style="max-height: 200px;">
-            <img src="img/book_enter_add.png" style="max-height: 200px;">
-        </div>
+        职工可以查看所有入库记录，并且可以新增入库记录。 
+        <div style="display: flex; justify-content: center;"> 
+        </div> 
+    ​        <img src="img/book_enter.png" style="max-height: 200px;">
+    ​        <img src="img/book_enter_add.png" style="max-height: 200px;">
+    ​    </div>
   - 图书出库
         职工可以查看所有出库记录，并且可以新增出库记录。
         <div style="display: flex; justify-content: center;">
@@ -533,7 +608,7 @@ pip install -r requirements.txt
             <img src="img/staff_management.png" style="max-height: 400px;">
         </div>
   - 新建职工
-        管理员可以新建职工账号。
+        管理员可以新建职工账号。 
         <div style="display: flex; justify-content: center;">
             <img src="img/add_staff.png" style="max-height: 400px;">
         </div>

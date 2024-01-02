@@ -1,3 +1,5 @@
+> 组员：21307069 张雄，21307088 郑圳毅，21311156 刘思迪
+
 # 需求建模
 
 ## 系统功能性需求
@@ -133,14 +135,19 @@
 
 <img src="./assets/library_management.drawio.png" alt="library_management.drawio" style="zoom: 50%;" />
 
+
+
+
+
 # 架构设计
 
-## 系统架构及原理（根据实现要更改）
+## 系统架构及原理
 
 本系统采用MVC的设计模式，为了更加清晰地显示其架构图，将model层再细分为两层：Domain层和Foundation层。Domain层主要表示系统的数据模型，Foundation层主要表示系统所使用的数据库类型支持和框架支持。下面是本系统的架构图：
-<img src="./img/architecture.png" alt="architecture" style="zoom:67%;" />
 
-视图层，即View层，是最顶层。负责界面的显示，以及与用户的交互功能，例如表单、网页等，是用户直接接触的一层。使用了XXX框架，为用户提供了简约美观的界面，使用户能够更加方便地使用系统。
+<img src="./img/architecture.png" alt="architecture" style="zoom: 50%;" />
+
+视图层，即View层，是最顶层。负责界面的显示，以及与用户的交互功能，例如表单、网页等，是用户直接接触的一层，为用户提供了简约美观的界面，使用户能够更加方便地使用系统。
 
 控制层，即Controller层，是中间层。负责接收用户的请求，调用模型层处理用户的请求，然后将处理结果返回给用户。可以理解为一个分发器，用来决定对于视图发来的请求，需要用哪一个模型来处理，以及处理完后需要跳回到哪一个视图。即用来连接视图和模型。
 
@@ -198,7 +205,7 @@
 
 本系统的ER图如下所示：
 
-<img src="./assets/E-R_diagram.png" alt="E-R_diagram" style="zoom:67%;" />
+<img src="./assets/E-R_diagram.png" alt="E-R_diagram" style="zoom: 50%;" />
 
 ### 数据库关系模式
 
@@ -311,13 +318,19 @@
 | avaibook_number |     int     |           | 同时可借图书数量 |
 |      days       |     int     |           |   最长借阅天数   |
 
+
+
+
+
 # 模块设计
+
 本系统按照用户群体划分三个模块：管理员模块、职工模块和读者模块。管理员模块主要负责对职工的管理，包括职工账号的添加和删除；职工模块主要负责对图书的和读者的管理，包括图书的入库和出库、图书的添加和删除、读者类型的修改、书库开放时间管理、出版社信息管理、职工个人信息修改；读者模块主要负责对图书的借阅和归还、对个人信息的修改。本章选取职工模块的图书管理和读者模块的图书借阅和图书归还作为本系统的三个功能模块进行详细介绍，管理员模块功能比较简单，不再赘述。
 
 ## 图书入库
+
 图书入库是职工的功能，即添加一本新的图书到图书馆的馆藏中。职工选择添加入库之后，跳转到图书入库页面，填写要添加的图书的信息后，点击添加按钮。系统会检查图书的信息是否正确，比如书库、出版社是否存在，书籍号是否已经被使用，如果信息正确，系统会将图书信息添加到数据库中，否则会提示职工重新填写信息。图书入库的流程图如下所示：
 
-<img src="./assets/addentering_flow.png" alt="addentering" style="zoom:67%;" />
+<img src="./assets/addentering_flow.png" alt="addentering" style="zoom: 67%;" />
 
 下面是图书入库的核心代码.当职工选择添加书籍入库之后，系统会检查书籍的信息是否正确，如果正确则将书籍信息和入库记录添加到数据库中，否则提示职工重新填写信息。
 ```python
@@ -368,7 +381,7 @@ def add_entering(
 ## 图书借阅
 图书借阅是读者用户的功能，读者首先找到想要借阅的书籍，然后系统对读者状态和书籍状态进行判断，符合条件之后，系统在借阅表中添加一条借阅记录，然后将书籍的状态改为不可借阅。，读者成功借阅图书。图书借阅的流程图如下所示：
 
-<img src="./assets/borrow_book.png" alt="borrow_book" style="zoom:67%;" />
+<img src="./assets/borrow_book.png" alt="borrow_book" style="zoom: 67%;" />
 
 下面是图书借阅的核心代码。系统先会检查读者的信誉值，信誉值过低的读者将失去借书资格；然后根据读者类型查询该读者最大的借阅数量和已借阅书籍数量，如果该读者已经借阅的书籍数量超过了最大借阅数量，则不能借阅；然后系统检查读者想要借阅的书籍是否处于可借阅的状态。如果书籍可以借阅，则系统在借阅表中添加一条借阅记录，然后将书籍的状态改为不可借阅，读者成功借阅图书。
 ```python
@@ -420,7 +433,7 @@ def borrow_book(book_id, reader_id) -> bool:
 
 图书借阅同样是读者用户的功能，读者首先浏览自己的已状态为未归还的借阅记录，对于其中符合条件的记录，读者可以选择归还，同时系统将这条记录状态改为已归还，并将书籍的状态改为可借阅，这样就成功完成了图书的归还。图书归还的流程图如下所示：
 
-![return](./assets/return.png)
+<img src="./assets/return.png" alt="return" style="zoom: 67%;" />
 
 具体实现代码方法如下。首先，获取对应读者的借阅信息：
 
@@ -487,6 +500,8 @@ def return_book_by_id(book_id) -> bool:
 
 
 
+
+
 # 部署与应用
 
 ## 系统部署架构
@@ -542,45 +557,53 @@ pip install -r requirements.txt
     <div style="display: flex; justify-content: center;">
         <img src="img/login.png" style="max-height: 400px;">
     </div>
+    
 - 修改/查看个人信息
     用户可以该该界面修改个人信息并申请保存，若修改有效，则会提示修改成功。
     <div style="display: flex; justify-content: center;">
         <img src="img/info.png" style="max-height: 400px;">
     </div>
+    
 - 图书查询
     图书查询作为图书管理系统的主页，可以通过ID、书名、作者、ISBN等信息查询书籍，并且可以根据每个条目后的按钮查看书籍的详细信息。
     <div style="display: flex; justify-content: center;">
         <img src="img/index.png" style="max-height: 400px;">
     </div>
+    
 - 书库查询
     书库查询可以查看所有书库的相关信息，其中职工可以新增书库。
     <div style="display: flex; justify-content: center;">
         <img src="img/stack.png" style="max-height: 400px;">
     </div>
+    
 - 出版社查询
     出版社查询可以查看所有出版社的相关信息，其中职工可以新增出版社。
     <div style="display: flex; justify-content: center;">
         <img src="img/publisher.png" style="max-height: 400px;">
     </div>
+    
 - 读者
   - 注册
-        读者可以通过该界面注册账号，注册成功后会跳转到登录界面。
+        读者可以通过该界面注册账号，注册成功后会跳转到登录界面。 
         <div style="display: flex; justify-content: center;">
             <img src="img/register.png" style="max-height: 400px;">
         </div>
+    
   - 借书
         在图书的详情界面，读者可以进行借书，若图书可以结果，则会提供借阅图书的按钮，点击后会根据读者的信息判断是否可以借阅，若可以借阅，则会提示借阅成功，否则会提示借阅失败。
-        <div style="display: flex; justify-content: center;">
-            <img src="img/borrow.png" style="max-height: 400px;">
-        </div>
+    <div style="display: flex; justify-content: center;">
+     <img src="img/borrow.png" style="max-height:300px;">
+    </div>
+    
   - 还书
-        读者可以在归还书籍界面查看正在借阅的书籍及相关信息，并且可以进行归还书籍。
+        读者可以在归还书籍界面查看正在借阅的书籍及相关信息，并且可以进行归还书籍。 
         <div style="display: flex; justify-content: center;">
-            <img src="img/return.png" style="max-height: 400px;">
+            <img src="img/return.png" style="max-height: 400px;zoom=50%;">
         </div>
+  
 - 职工
   - 图书信息修改
-        在图书的详情界面，职工可以查看该书籍的历史借阅记录、入库记录以及出库记录，并且可以修改图书的信息。
+        在图书的详情界面，职工可以查看该书籍的历史借阅记录、入库记录以及出库记录，并且可以修改图书的信息。 
         <div style="display: flex; justify-content: center;">
             <img src="img/book_modify.png" style="max-height: 400px;">
         </div>
@@ -601,6 +624,7 @@ pip install -r requirements.txt
         <div style="display: flex; justify-content: center;">
             <img src="img/reader_management.png" style="max-height: 400px;">
         </div>
+  
 - 管理员
   - 职工管理
         管理员的主页显示所有职工的信息。
